@@ -1,0 +1,110 @@
+.crypto-card {
+  display: grid;
+  grid-template-columns: minmax(112px, auto) minmax(128px, auto) 36px;
+  align-items: center;
+  justify-content: end;
+  width: 320px;
+  gap: var(--space-5);
+  min-height: 48px;
+  color: var(--color-white);
+}
+
+.crypto-card__price,
+.crypto-card__name {
+  color: var(--color-white);
+  font-size: clamp(0.95rem, 1.1vw, 1.25rem);
+  line-height: 1;
+  text-shadow: 0 0 14px rgb(255 255 255 / 18%);
+}
+
+.crypto-card__price {
+  justify-self: end;
+}
+
+.crypto-card__name {
+  font-weight: var(--font-weight-regular);
+}
+
+.crypto-card__icon {
+  display: inline-grid;
+  width: 31px;
+  height: 31px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--crypto-card-accent);
+  color: var(--color-white);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  box-shadow: 0 0 16px rgb(255 255 255 / 16%);
+}
+
+.crypto-card--right {
+  grid-template-columns: 36px minmax(138px, auto) minmax(112px, auto);
+  justify-content: start;
+}
+
+.crypto-card--right .crypto-card__icon {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.crypto-card--right .crypto-card__name {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.crypto-card--right .crypto-card__price {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: start;
+}
+
+@media (width <= 900px) {
+  .crypto-card {
+    grid-template-columns: minmax(80px, auto) minmax(96px, auto) 32px;
+    width: auto;
+    gap: var(--space-3);
+  }
+}
+
+@media (width <= 640px) {
+  .crypto-card {
+    grid-template-columns: 1fr auto;
+    justify-content: stretch;
+  }
+
+  .crypto-card__price {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: start;
+  }
+
+  .crypto-card__name {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .crypto-card__icon {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+
+  .crypto-card--right {
+    grid-template-columns: 1fr auto;
+  }
+
+  .crypto-card--right .crypto-card__price {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .crypto-card--right .crypto-card__name {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .crypto-card--right .crypto-card__icon {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+}

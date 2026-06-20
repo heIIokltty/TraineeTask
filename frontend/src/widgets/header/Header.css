@@ -1,27 +1,30 @@
 .header {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   z-index: var(--z-index-header);
   width: 100%;
   color: var(--color-white);
+  background: linear-gradient(180deg, rgb(3 20 38 / 58%) 0%, rgb(3 20 38 / 0%) 100%);
+  pointer-events: none;
 }
 
 .header__inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: min(100% - 80px, 1760px);
+  width: min(100% - 104px, 1760px);
   margin: 0 auto;
-  padding: 32px 0 0;
+  padding: 26px 0 18px;
   gap: var(--space-8);
+  pointer-events: auto;
 }
 
 .header__logo {
   position: relative;
   display: inline-flex;
   color: var(--color-white);
-  font-size: clamp(1.75rem, 2.6vw, 2.75rem);
+  font-size: clamp(1.5rem, 2.05vw, 2.35rem);
   font-weight: var(--font-weight-bold);
   letter-spacing: -0.04em;
   line-height: 1;
@@ -35,7 +38,7 @@
   right: 0;
   bottom: -6px;
   left: 0;
-  height: 4px;
+  height: 3px;
   border-radius: var(--radius-pill);
   background: var(--color-white);
   box-shadow: 0 0 8px rgb(255 255 255 / 42%);
@@ -61,15 +64,15 @@
 
 .header__nav-item:not(:first-child)::before {
   width: 1px;
-  height: 32px;
-  margin: 0 clamp(18px, 2.2vw, 32px);
+  height: 28px;
+  margin: 0 clamp(16px, 1.9vw, 30px);
   background: rgb(255 255 255 / 24%);
   content: "";
 }
 
 .header__nav-link {
   color: var(--color-white);
-  font-size: clamp(0.875rem, 1.1vw, 1.25rem);
+  font-size: clamp(0.8125rem, 0.95vw, 1.125rem);
   font-weight: var(--font-weight-medium);
   letter-spacing: 0.06em;
   line-height: 1;
@@ -95,7 +98,7 @@
   .header__inner {
     width: min(100% - 48px, var(--layout-content-width));
     align-items: flex-start;
-    padding-top: var(--space-6);
+    padding-top: var(--space-5);
   }
 
   .header__nav-list {
