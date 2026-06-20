@@ -1,0 +1,137 @@
+.banking-card {
+  width: min(100%, 395px);
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: 6px;
+  background: var(--color-white);
+  box-shadow: var(--shadow-md);
+  color: #1c0a2e;
+}
+
+.banking-card__header {
+  background: #2b005d;
+  color: var(--color-white);
+}
+
+.banking-card__title {
+  padding: 31px var(--space-6) 21px;
+  font-size: clamp(1.75rem, 2vw, 2rem);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.banking-card__tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.banking-card__tab {
+  min-height: 53px;
+  border: 0;
+  border-radius: 5px 5px 0 0;
+  background: transparent;
+  color: var(--color-white);
+  font-size: 0.8125rem;
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.banking-card__tab--active {
+  background: var(--color-white);
+  color: #2b005d;
+}
+
+.banking-card__tab:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -4px;
+}
+
+.banking-card__body {
+  padding: 28px 34px 31px;
+}
+
+.banking-card__divider {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-5);
+  margin: 20px 0 23px;
+  color: #a1a1a1;
+  font-size: 0.75rem;
+}
+
+.banking-card__divider::before,
+.banking-card__divider::after {
+  height: 1px;
+  background: #c9c9c9;
+  content: "";
+}
+
+.banking-card__forgot-link,
+.banking-card__signup-link {
+  color: #1c0a2e;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color var(--transition-fast);
+}
+
+.banking-card__forgot-link:hover,
+.banking-card__forgot-link:focus-visible,
+.banking-card__signup-link:hover,
+.banking-card__signup-link:focus-visible {
+  color: #2b005d;
+}
+
+.banking-card__forgot-link {
+  display: block;
+  width: fit-content;
+  margin: 15px auto 0;
+  font-size: 0.8125rem;
+  line-height: 1;
+}
+
+.banking-card__footer {
+  color: #1c0a2e;
+  font-size: 0.8125rem;
+  line-height: 1;
+  text-align: center;
+}
+
+.banking-card__signup-link {
+  margin-left: var(--space-8);
+}
+
+@media (width <= 1200px) {
+  .banking-card {
+    width: min(100%, 395px);
+  }
+
+  .banking-card__title {
+    padding-inline: var(--space-6);
+  }
+
+  .banking-card__body {
+    padding-inline: 34px;
+  }
+}
+
+@media (width <= 768px) {
+  .banking-card {
+    width: min(100%, 420px);
+  }
+}
+
+@media (width <= 420px) {
+  .banking-card__body {
+    padding-inline: var(--space-6);
+  }
+
+  .banking-card__signup-link {
+    margin-left: var(--space-4);
+  }
+}

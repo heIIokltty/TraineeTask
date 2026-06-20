@@ -31,13 +31,17 @@
   z-index: 2;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   width: min(100% - 160px, 1760px);
   margin: 0 auto;
+  gap: clamp(48px, 5vw, 120px);
   padding: 148px 0 96px;
 }
 
 .hero-section__copy {
-  width: min(100%, 1030px);
+  flex: 1 1 720px;
+  min-width: 0;
+  max-width: 1030px;
 }
 
 .hero-section__title {
@@ -138,10 +142,18 @@
 @media (width <= 1200px) {
   .hero-section__content {
     width: min(100% - 80px, var(--layout-content-width));
+    gap: var(--space-12);
   }
 
   .hero-section__title {
     font-size: clamp(3.75rem, 8vw, 6.5rem);
+  }
+}
+
+@media (width <= 980px) {
+  .hero-section__content {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
@@ -152,7 +164,7 @@
 
   .hero-section__content {
     width: min(100% - 48px, var(--layout-content-width));
-    align-items: flex-end;
+    align-items: center;
     padding: 220px 0 72px;
   }
 

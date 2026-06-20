@@ -1,8 +1,11 @@
+import { createAuthService } from '../../features/google-auth/model/auth.service';
+import { createBankingCard } from '../banking-card/BankingCard';
 import './HeroSection.css';
 
 const HERO_VIDEO_SOURCE = 'videos/HP.webm';
 
 export function createHeroSection(): HTMLElement {
+  const authService = createAuthService();
   const sectionElement = document.createElement('section');
   sectionElement.className = 'hero-section';
   sectionElement.setAttribute('aria-labelledby', 'hero-title');
@@ -59,7 +62,7 @@ export function createHeroSection(): HTMLElement {
 
   actionsElement.append(learnMoreLink, playVideoButton);
   copyElement.append(actionsElement);
-  contentElement.append(copyElement);
+  contentElement.append(copyElement, createBankingCard({ authService }));
   sectionElement.append(videoElement, overlayElement, contentElement);
 
   requestAnimationFrame(() => {
