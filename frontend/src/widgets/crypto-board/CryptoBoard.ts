@@ -1,5 +1,10 @@
+import { createCryptoPriceStream } from '../../entities/cryptocurrency/api/cryptoPriceStream';
 import { createCryptocurrencyStore } from '../../entities/cryptocurrency/model/cryptocurrency.store';
-import { createCryptoCard } from '../../entities/cryptocurrency/ui/CryptoCard';
+import type { CryptocurrencyId } from '../../entities/cryptocurrency/model/cryptocurrency.types';
+import {
+  createCryptoCard,
+  updateCryptoCardPrice,
+} from '../../entities/cryptocurrency/ui/CryptoCard';
 import './CryptoBoard.css';
 
 const CRYPTO_ORBIT_ANGLES = [
@@ -17,6 +22,7 @@ const CRYPTO_ORBIT_ANGLES = [
 
 export function createCryptoBoard(): HTMLElement {
   const store = createCryptocurrencyStore();
+  const priceStream = createCryptoPriceStream();
   const sectionElement = document.createElement('section');
   sectionElement.className = 'crypto-board';
   sectionElement.setAttribute('aria-labelledby', 'crypto-board-title');
@@ -70,6 +76,7 @@ export function createCryptoBoard(): HTMLElement {
 
   const cardsElement = document.createElement('div');
   cardsElement.className = 'crypto-board__cards';
+  const cardElements = new Map<CryptocurrencyId, HTMLElement>();
 
   const cryptocurrencies = store.getCryptocurrencies();
   cryptocurrencies.forEach((cryptocurrency, index) => {
@@ -84,11 +91,48 @@ export function createCryptoBoard(): HTMLElement {
       cardElement.style.setProperty('--card-shift-x', '-100%');
     }
 
+    cardElements.set(cryptocurrency.id, cardElement);
     cardsElement.append(cardElement);
+  });
+
+  const unsubscribeStream = priceStream.subscribe((prices) => {
+    store.setPrices(prices);
+  });
+  const unsubscribeStore = store.subscribe(() => {
+    store.getCryptocurrencies().forEach((cryptocurrency) => {
+      const cardElement = cardElements.get(cryptocurrency.id);
+
+      if (cardElement) {
+        updateCryptoCardPrice(cardElement, cryptocurrency.price);
+      }
+    });
+  });
+
+  priceStream.connect();
+  observeBoardRemoval(sectionElement, () => {
+    unsubscribeStore();
+    unsubscribeStream();
+    priceStream.disconnect();
   });
 
   contentElement.append(lineLayerElement, centerElement, cardsElement);
   sectionElement.append(contentElement);
 
   return sectionElement;
+}
+
+function observeBoardRemoval(sectionElement: HTMLElement, cleanup: () => void): void {
+  const observer = new MutationObserver(() => {
+    if (document.body.contains(sectionElement)) {
+      return;
+    }
+
+    cleanup();
+    observer.disconnect();
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
 }

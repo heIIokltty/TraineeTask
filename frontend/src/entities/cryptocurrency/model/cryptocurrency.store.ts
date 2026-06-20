@@ -1,7 +1,4 @@
-import {
-  CRYPTOCURRENCIES,
-  MOCK_CRYPTOCURRENCY_PRICES,
-} from './cryptocurrency.constants';
+import { CRYPTOCURRENCIES } from './cryptocurrency.constants';
 import type {
   CryptocurrencyId,
   CryptocurrencyPrice,
@@ -17,7 +14,7 @@ export interface CryptocurrencyStore {
 }
 
 export function createCryptocurrencyStore(): CryptocurrencyStore {
-  let prices = [...MOCK_CRYPTOCURRENCY_PRICES];
+  let prices = CRYPTOCURRENCIES.map((coin) => createLoadingPrice(coin.id));
   const listeners = new Set<CryptocurrencyPriceListener>();
 
   function getPrices(): ReadonlyArray<CryptocurrencyPrice> {
@@ -25,7 +22,12 @@ export function createCryptocurrencyStore(): CryptocurrencyStore {
   }
 
   function setPrices(nextPrices: ReadonlyArray<CryptocurrencyPrice>): void {
-    prices = [...nextPrices];
+    prices = prices.map((price) => {
+      const nextPrice = nextPrices.find((item) => item.coinId === price.coinId);
+
+      return nextPrice ?? price;
+    });
+
     listeners.forEach((listener) => listener(prices));
   }
 
