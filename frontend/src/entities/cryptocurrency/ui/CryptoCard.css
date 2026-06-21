@@ -1,110 +1,81 @@
 .crypto-card {
-  display: grid;
-  grid-template-columns: minmax(112px, auto) minmax(128px, auto) 36px;
+  --crypto-card-icon-size: 31px;
+
+  display: inline-flex;
   align-items: center;
-  justify-content: end;
-  width: 320px;
-  gap: var(--space-5);
+  width: max-content;
+  max-width: none;
   min-height: 48px;
+  gap: 12px;
   color: var(--color-white);
+  white-space: nowrap;
 }
 
 .crypto-card__price,
 .crypto-card__name {
+  flex: 0 0 auto;
   color: var(--color-white);
   font-size: clamp(0.95rem, 1.1vw, 1.25rem);
   line-height: 1;
   text-shadow: 0 0 14px rgb(255 255 255 / 18%);
+  white-space: nowrap;
 }
 
 .crypto-card__price {
-  justify-self: end;
+  font-variant-numeric: tabular-nums;
+  order: 1;
 }
 
 .crypto-card__name {
+  max-width: 150px;
+  overflow: hidden;
   font-weight: var(--font-weight-regular);
+  order: 2;
+  text-overflow: ellipsis;
 }
 
 .crypto-card__icon {
   display: inline-grid;
-  width: 31px;
-  height: 31px;
+  flex: 0 0 auto;
+  width: var(--crypto-card-icon-size);
+  height: var(--crypto-card-icon-size);
   place-items: center;
   border-radius: 50%;
   background: var(--crypto-card-accent);
   color: var(--color-white);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
+  order: 3;
   box-shadow: 0 0 16px rgb(255 255 255 / 16%);
 }
 
-.crypto-card--right {
-  grid-template-columns: 36px minmax(138px, auto) minmax(112px, auto);
-  justify-content: start;
-}
-
 .crypto-card--right .crypto-card__icon {
-  grid-column: 1;
-  grid-row: 1;
+  order: 1;
 }
 
 .crypto-card--right .crypto-card__name {
-  grid-column: 2;
-  grid-row: 1;
+  order: 2;
 }
 
 .crypto-card--right .crypto-card__price {
-  grid-column: 3;
-  grid-row: 1;
-  justify-self: start;
+  order: 3;
 }
 
 @media (width <= 900px) {
   .crypto-card {
-    grid-template-columns: minmax(80px, auto) minmax(96px, auto) 32px;
-    width: auto;
-    gap: var(--space-3);
+    --crypto-card-icon-size: 29px;
+
+    gap: 10px;
+  }
+
+  .crypto-card__name {
+    max-width: 128px;
   }
 }
 
 @media (width <= 640px) {
   .crypto-card {
-    grid-template-columns: 1fr auto;
-    justify-content: stretch;
-  }
-
-  .crypto-card__price {
-    grid-column: 1;
-    grid-row: 2;
-    justify-self: start;
-  }
-
-  .crypto-card__name {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .crypto-card__icon {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-  }
-
-  .crypto-card--right {
-    grid-template-columns: 1fr auto;
-  }
-
-  .crypto-card--right .crypto-card__price {
-    grid-column: 1;
-    grid-row: 2;
-  }
-
-  .crypto-card--right .crypto-card__name {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .crypto-card--right .crypto-card__icon {
-    grid-column: 2;
-    grid-row: 1 / span 2;
+    width: 100%;
+    max-width: 100%;
   }
 }
