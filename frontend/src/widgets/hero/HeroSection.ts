@@ -32,9 +32,6 @@ export function createHeroSection(): HTMLElement {
   sourceElement.type = 'video/webm';
   videoElement.append(sourceElement);
 
-  const overlayElement = document.createElement('div');
-  overlayElement.className = 'hero-section__overlay';
-
   const contentElement = document.createElement('div');
   contentElement.className = 'hero-section__content';
 
@@ -72,7 +69,7 @@ export function createHeroSection(): HTMLElement {
   actionsElement.append(learnMoreLink, playVideoButton);
   copyElement.append(actionsElement);
   contentElement.append(copyElement, createBankingCard({ authService }));
-  sectionElement.append(videoElement, overlayElement, contentElement);
+  sectionElement.append(videoElement, contentElement);
 
   requestAnimationFrame(() => {
     void videoElement.play().catch(() => {

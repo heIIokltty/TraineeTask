@@ -4,9 +4,7 @@
   min-height: 1000px;
   overflow: hidden;
   color: var(--color-white);
-  background:
-    url("/images/hero-poster.png") center top / cover no-repeat,
-    var(--color-background);
+  background: var(--color-background);
 }
 
 .hero-section__video {
@@ -16,17 +14,8 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.82;
+  opacity: 1;
   pointer-events: none;
-}
-
-.hero-section__overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background:
-    linear-gradient(90deg, rgb(3 13 27 / 38%) 0%, rgb(3 13 27 / 14%) 52%, rgb(3 13 27 / 38%) 100%),
-    linear-gradient(180deg, rgb(2 9 19 / 0%) 0%, rgb(2 9 19 / 26%) 100%);
 }
 
 .hero-section__content {
