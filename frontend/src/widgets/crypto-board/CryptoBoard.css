@@ -57,13 +57,13 @@
 
 .crypto-board__frame--top-left {
   top: 66px;
-  left: 552px;
+  left: clamp(0px, 4vw, 72px);
   width: 330px;
   height: 250px;
 }
 
 .crypto-board__frame--bottom-right {
-  right: 552px;
+  right: clamp(0px, 4vw, 72px);
   bottom: 94px;
   width: 430px;
   height: 160px;

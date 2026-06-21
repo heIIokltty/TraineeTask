@@ -5,6 +5,8 @@
 }
 
 .crypto-dropdown__trigger {
+  position: relative;
+  z-index: 2;
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
@@ -20,6 +22,28 @@
   transition:
     border-color var(--transition-fast),
     transform var(--transition-fast);
+}
+
+.crypto-dropdown__trigger::after {
+  position: absolute;
+  bottom: -7px;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  border-right: 1px solid rgb(92 33 134 / 64%);
+  border-bottom: 1px solid rgb(92 33 134 / 64%);
+  background: var(--color-white);
+  content: "";
+  opacity: 0;
+  transform: translateX(-50%) rotate(45deg) scale(0.72);
+  transition:
+    opacity var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.crypto-dropdown__trigger[aria-expanded="true"]::after {
+  opacity: 1;
+  transform: translateX(-50%) rotate(45deg) scale(1);
 }
 
 .crypto-dropdown__trigger:hover,
@@ -41,7 +65,7 @@
   z-index: calc(var(--z-index-dropdown) + 1);
   display: grid;
   max-height: 280px;
-  margin-top: var(--space-3);
+  margin-top: var(--space-4);
   overflow-y: auto;
   padding: var(--space-2);
   border: 1px solid rgb(92 33 134 / 64%);
