@@ -1,0 +1,110 @@
+.crypto-dropdown {
+  position: relative;
+  z-index: var(--z-index-dropdown);
+  width: min(344px, 72vw);
+}
+
+.crypto-dropdown__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 48px;
+  padding: 0 34px 0 44px;
+  border: 1px solid #5c2186;
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+  color: #2b005d;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  transition:
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.crypto-dropdown__trigger:hover,
+.crypto-dropdown__trigger:focus-visible {
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+.crypto-dropdown__trigger:focus-visible,
+.crypto-dropdown__option:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: var(--space-2);
+}
+
+.crypto-dropdown__menu {
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: calc(var(--z-index-dropdown) + 1);
+  display: grid;
+  max-height: 280px;
+  margin-top: var(--space-3);
+  overflow-y: auto;
+  padding: var(--space-2);
+  border: 1px solid rgb(92 33 134 / 64%);
+  border-radius: var(--radius-sm);
+  background: rgb(255 255 255 / 96%);
+  box-shadow: var(--shadow-md);
+}
+
+.crypto-dropdown__menu[hidden] {
+  display: none;
+}
+
+.crypto-dropdown__option {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 40px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: #2b005d;
+  font-size: var(--font-size-sm);
+  text-align: left;
+}
+
+.crypto-dropdown__option:hover:not(:disabled),
+.crypto-dropdown__option:focus-visible:not(:disabled) {
+  background: rgb(43 0 93 / 8%);
+}
+
+.crypto-dropdown__option:disabled {
+  color: rgb(43 0 93 / 42%);
+  cursor: not-allowed;
+}
+
+.crypto-dropdown__option-icon {
+  display: inline-grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--crypto-dropdown-accent);
+  color: var(--color-white);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.crypto-dropdown__option-status {
+  min-width: 38px;
+  color: rgb(43 0 93 / 52%);
+  font-size: var(--font-size-xs);
+  text-align: right;
+}
+
+@media (width <= 640px) {
+  .crypto-dropdown {
+    width: 100%;
+  }
+
+  .crypto-dropdown__trigger {
+    min-height: 44px;
+    padding-inline: var(--space-5);
+    font-size: var(--font-size-md);
+  }
+}

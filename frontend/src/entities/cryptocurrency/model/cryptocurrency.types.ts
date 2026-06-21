@@ -8,7 +8,13 @@ export type CryptocurrencyId =
   | 'midnight'
   | 'dogecoin'
   | 'sui'
-  | 'tether';
+  | 'tether'
+  | 'cardano'
+  | 'polkadot'
+  | 'avalanche'
+  | 'chainlink'
+  | 'polygon'
+  | 'toncoin';
 
 export type CryptocurrencyPriceStatus = 'loading' | 'ready' | 'error';
 

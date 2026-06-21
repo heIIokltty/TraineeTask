@@ -61,6 +61,42 @@ export const CRYPTOCURRENCIES: ReadonlyArray<Cryptocurrency> = [
     symbol: 'USDT',
     accentColor: '#26a17b',
   },
+  {
+    id: 'cardano',
+    name: 'Cardano',
+    symbol: 'ADA',
+    accentColor: '#3468d1',
+  },
+  {
+    id: 'polkadot',
+    name: 'Polkadot',
+    symbol: 'DOT',
+    accentColor: '#e6007a',
+  },
+  {
+    id: 'avalanche',
+    name: 'Avalanche',
+    symbol: 'AVAX',
+    accentColor: '#e84142',
+  },
+  {
+    id: 'chainlink',
+    name: 'Chainlink',
+    symbol: 'LINK',
+    accentColor: '#2a5ada',
+  },
+  {
+    id: 'polygon',
+    name: 'Polygon',
+    symbol: 'MATIC',
+    accentColor: '#8247e5',
+  },
+  {
+    id: 'toncoin',
+    name: 'Toncoin',
+    symbol: 'TON',
+    accentColor: '#0098ea',
+  },
 ];
 
 export const MOCK_CRYPTOCURRENCY_PRICES: ReadonlyArray<CryptocurrencyPrice> = [
@@ -74,4 +110,10 @@ export const MOCK_CRYPTOCURRENCY_PRICES: ReadonlyArray<CryptocurrencyPrice> = [
   { coinId: 'dogecoin', value: 0.1278, status: 'ready' },
   { coinId: 'sui', value: 1.427, status: 'ready' },
   { coinId: 'tether', value: 1, status: 'ready' },
+  { coinId: 'cardano', value: 0.684, status: 'ready' },
+  { coinId: 'polkadot', value: 4.71, status: 'ready' },
+  { coinId: 'avalanche', value: 22.34, status: 'ready' },
+  { coinId: 'chainlink', value: 13.82, status: 'ready' },
+  { coinId: 'polygon', value: 0.219, status: 'ready' },
+  { coinId: 'toncoin', value: 3.18, status: 'ready' },
 ];

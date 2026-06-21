@@ -1,27 +1,46 @@
+import { createSelectedCoinsStore } from '../../features/add-cryptocurrency/model/selectedCoins.store';
+import { createCryptoDropdown } from '../../features/add-cryptocurrency/ui/CryptoDropdown';
 import { createCryptoPriceStream } from '../../entities/cryptocurrency/api/cryptoPriceStream';
 import { createCryptocurrencyStore } from '../../entities/cryptocurrency/model/cryptocurrency.store';
-import type { CryptocurrencyId } from '../../entities/cryptocurrency/model/cryptocurrency.types';
+import type {
+  CryptocurrencyId,
+  CryptocurrencyViewModel,
+} from '../../entities/cryptocurrency/model/cryptocurrency.types';
 import {
   createCryptoCard,
   updateCryptoCardPrice,
 } from '../../entities/cryptocurrency/ui/CryptoCard';
 import './CryptoBoard.css';
 
-const CRYPTO_ORBIT_ANGLES = [
-  '222deg',
-  '200deg',
-  '180deg',
-  '160deg',
-  '138deg',
-  '318deg',
-  '340deg',
-  '0deg',
-  '20deg',
-  '42deg',
-] as const;
+type CryptoBoardSide = 'left' | 'right';
+
+const LEFT_BASE_COIN_IDS: ReadonlyArray<CryptocurrencyId> = [
+  'bitcoin',
+  'ethereum',
+  'xrp',
+  'usd-coin',
+];
+
+const RIGHT_BASE_COIN_IDS: ReadonlyArray<CryptocurrencyId> = [
+  'binance-coin',
+  'midnight',
+  'dogecoin',
+  'sui',
+];
+
+const LEFT_ANGLE_RANGE = {
+  start: 222,
+  end: 138,
+} as const;
+
+const RIGHT_ANGLE_RANGE = {
+  start: 318,
+  end: 402,
+} as const;
 
 export function createCryptoBoard(): HTMLElement {
   const store = createCryptocurrencyStore();
+  const selectedCoinsStore = createSelectedCoinsStore();
   const priceStream = createCryptoPriceStream();
   const sectionElement = document.createElement('section');
   sectionElement.className = 'crypto-board';
@@ -67,10 +86,7 @@ export function createCryptoBoard(): HTMLElement {
     </svg>
     <div class="crypto-board__center-content">
       <h2 class="crypto-board__title" id="crypto-board-title">Online Banking</h2>
-      <button class="crypto-board__add-button" type="button">
-        <span>Add a Cryptocurrency</span>
-        <span aria-hidden="true">&gt;</span>
-      </button>
+      <div class="crypto-board__dropdown-slot"></div>
     </div>
   `;
 
@@ -78,22 +94,18 @@ export function createCryptoBoard(): HTMLElement {
   cardsElement.className = 'crypto-board__cards';
   const cardElements = new Map<CryptocurrencyId, HTMLElement>();
 
-  const cryptocurrencies = store.getCryptocurrencies();
-  cryptocurrencies.forEach((cryptocurrency, index) => {
-    const cardElement = createCryptoCard({ cryptocurrency });
-    cardElement.classList.add(`crypto-card--orbit-${index + 1}`);
-    cardElement.style.setProperty('--angle', CRYPTO_ORBIT_ANGLES[index]);
-
-    if (index >= cryptocurrencies.length / 2) {
-      cardElement.classList.add('crypto-card--right');
-      cardElement.style.setProperty('--card-shift-x', '0%');
-    } else {
-      cardElement.style.setProperty('--card-shift-x', '-100%');
-    }
-
-    cardElements.set(cryptocurrency.id, cardElement);
-    cardsElement.append(cardElement);
+  const cryptoDropdown = createCryptoDropdown({
+    cryptocurrencies: store.getCryptocurrencies(),
+    disabledCoinIds: getVisibleCoinIds(selectedCoinsStore.getState().selectedCoinIds),
+    isLimitReached: false,
+    onSelect(coinId): void {
+      selectedCoinsStore.selectCoin(coinId);
+    },
   });
+  const dropdownSlot = centerElement.querySelector<HTMLElement>('.crypto-board__dropdown-slot');
+  dropdownSlot?.append(cryptoDropdown.element);
+
+  renderCryptoCards();
 
   const unsubscribeStream = priceStream.subscribe((prices) => {
     store.setPrices(prices);
@@ -107,9 +119,13 @@ export function createCryptoBoard(): HTMLElement {
       }
     });
   });
+  const unsubscribeSelectedCoins = selectedCoinsStore.subscribe(() => {
+    renderCryptoCards();
+  });
 
   priceStream.connect();
   observeBoardRemoval(sectionElement, () => {
+    unsubscribeSelectedCoins();
     unsubscribeStore();
     unsubscribeStream();
     priceStream.disconnect();
@@ -119,6 +135,57 @@ export function createCryptoBoard(): HTMLElement {
   sectionElement.append(contentElement);
 
   return sectionElement;
+
+  function renderCryptoCards(): void {
+    const selectedCoinIds = selectedCoinsStore.getState().selectedCoinIds;
+    const cryptocurrencies = store.getCryptocurrencies();
+    const leftCoins = getVisibleSideCoins(cryptocurrencies, selectedCoinIds, 'left');
+    const rightCoins = getVisibleSideCoins(cryptocurrencies, selectedCoinIds, 'right');
+    const visibleCoinIds = getVisibleCoinIds(selectedCoinIds);
+
+    renderSide(leftCoins, 'left');
+    renderSide(rightCoins, 'right');
+    cryptoDropdown.update({
+      disabledCoinIds: visibleCoinIds,
+      isLimitReached: selectedCoinIds.length >= selectedCoinsStore.getState().maxSelectedCoins,
+    });
+  }
+
+  function renderSide(
+    cryptocurrencies: ReadonlyArray<CryptocurrencyViewModel>,
+    side: CryptoBoardSide,
+  ): void {
+    const angleRange = side === 'left' ? LEFT_ANGLE_RANGE : RIGHT_ANGLE_RANGE;
+
+    cryptocurrencies.forEach((cryptocurrency, index) => {
+      const cardElement = getOrCreateCardElement(cryptocurrency);
+      const angle = getAngleForIndex(index, cryptocurrencies.length, angleRange.start, angleRange.end);
+
+      cardElement.classList.toggle('crypto-card--right', side === 'right');
+      cardElement.style.setProperty('--angle', `${angle}deg`);
+      cardElement.style.setProperty('--card-shift-x', side === 'right' ? '0%' : '-100%');
+      cardsElement.append(cardElement);
+      updateCryptoCardPrice(cardElement, cryptocurrency.price);
+    });
+  }
+
+  function getOrCreateCardElement(cryptocurrency: CryptocurrencyViewModel): HTMLElement {
+    const existingCardElement = cardElements.get(cryptocurrency.id);
+
+    if (existingCardElement) {
+      return existingCardElement;
+    }
+
+    const cardElement = createCryptoCard({ cryptocurrency });
+    cardElement.classList.add('crypto-card--enter');
+    cardElements.set(cryptocurrency.id, cardElement);
+
+    requestAnimationFrame(() => {
+      cardElement.classList.remove('crypto-card--enter');
+    });
+
+    return cardElement;
+  }
 }
 
 function observeBoardRemoval(sectionElement: HTMLElement, cleanup: () => void): void {
@@ -135,4 +202,55 @@ function observeBoardRemoval(sectionElement: HTMLElement, cleanup: () => void): 
     childList: true,
     subtree: true,
   });
+}
+
+function getVisibleSideCoins(
+  cryptocurrencies: ReadonlyArray<CryptocurrencyViewModel>,
+  selectedCoinIds: ReadonlyArray<CryptocurrencyId>,
+  side: CryptoBoardSide,
+): ReadonlyArray<CryptocurrencyViewModel> {
+  const baseCoinIds = side === 'left' ? LEFT_BASE_COIN_IDS : RIGHT_BASE_COIN_IDS;
+  const selectedSideCoinIds = getSelectedCoinIdsForSide(selectedCoinIds, side);
+  const visibleCoinIds = new Set<CryptocurrencyId>([
+    ...baseCoinIds,
+    ...selectedSideCoinIds,
+  ]);
+
+  return cryptocurrencies.filter((cryptocurrency) => visibleCoinIds.has(cryptocurrency.id));
+}
+
+function getSelectedCoinIdsForSide(
+  selectedCoinIds: ReadonlyArray<CryptocurrencyId>,
+  side: CryptoBoardSide,
+): ReadonlyArray<CryptocurrencyId> {
+  return selectedCoinIds.filter((_, index) => {
+    const shouldPlaceRight = index % 2 === 0;
+
+    return side === 'right' ? shouldPlaceRight : !shouldPlaceRight;
+  });
+}
+
+function getVisibleCoinIds(
+  selectedCoinIds: ReadonlyArray<CryptocurrencyId>,
+): ReadonlySet<CryptocurrencyId> {
+  return new Set<CryptocurrencyId>([
+    ...LEFT_BASE_COIN_IDS,
+    ...RIGHT_BASE_COIN_IDS,
+    ...selectedCoinIds,
+  ]);
+}
+
+function getAngleForIndex(
+  index: number,
+  itemsCount: number,
+  startAngle: number,
+  endAngle: number,
+): number {
+  if (itemsCount <= 1) {
+    return (startAngle + endAngle) / 2;
+  }
+
+  const progress = index / (itemsCount - 1);
+
+  return startAngle + (endAngle - startAngle) * progress;
 }

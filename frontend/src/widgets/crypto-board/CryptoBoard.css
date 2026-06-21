@@ -22,6 +22,7 @@
 .crypto-board__line-layer {
   position: absolute;
   inset: 0;
+  z-index: 0;
   pointer-events: none;
 }
 
@@ -77,6 +78,7 @@
   position: absolute;
   top: 50%;
   left: 50%;
+  z-index: 2;
   display: grid;
   width: var(--circle-size);
   min-width: 650px;
@@ -131,6 +133,10 @@
   margin-top: 10px;
 }
 
+.crypto-board__dropdown-slot {
+  width: min(344px, 72vw);
+}
+
 .crypto-board__title {
   color: var(--color-white);
   font-size: clamp(2rem, 2.25vw, 2.7rem);
@@ -140,42 +146,16 @@
   text-transform: uppercase;
 }
 
-.crypto-board__add-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  width: min(344px, 72vw);
-  min-height: 48px;
-  padding: 0 34px 0 44px;
-  border: 1px solid #5c2186;
-  border-radius: var(--radius-sm);
-  background: var(--color-white);
-  color: #2b005d;
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-medium);
-  transition:
-    border-color var(--transition-fast),
-    transform var(--transition-fast);
-}
-
-.crypto-board__add-button:hover,
-.crypto-board__add-button:focus-visible {
-  border-color: var(--color-accent);
-  transform: translateY(-2px);
-}
-
-.crypto-board__add-button:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: var(--space-2);
-}
-
 .crypto-board__cards {
   position: absolute;
   inset: 0;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .crypto-board__cards .crypto-card {
   position: absolute;
+  pointer-events: auto;
   top: 50%;
   left: 50%;
   transform:
@@ -183,6 +163,14 @@
     translateX(var(--crypto-radius))
     rotate(calc(-1 * var(--angle)))
     translate(var(--card-shift-x), -50%);
+  opacity: 1;
+  transition:
+    opacity 240ms ease,
+    transform 300ms ease;
+}
+
+.crypto-board__cards .crypto-card--enter {
+  opacity: 0;
 }
 
 @keyframes crypto-frame-path-cycle {
@@ -335,10 +323,8 @@
     font-size: clamp(1.35rem, 7vw, 2rem);
   }
 
-  .crypto-board__add-button {
-    min-height: 44px;
-    padding-inline: var(--space-5);
-    font-size: var(--font-size-md);
+  .crypto-board__dropdown-slot {
+    width: 100%;
   }
 
   .crypto-board__cards {

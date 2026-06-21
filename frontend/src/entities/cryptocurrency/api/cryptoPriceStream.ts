@@ -22,6 +22,12 @@ const BINANCE_PRICE_SOURCES: ReadonlyArray<BinancePriceSource> = [
   { coinId: 'dogecoin', symbol: 'dogeusdt' },
   { coinId: 'sui', symbol: 'suiusdt' },
   { coinId: 'tether', symbol: 'usdcusdt', invertPrice: true },
+  { coinId: 'cardano', symbol: 'adausdt' },
+  { coinId: 'polkadot', symbol: 'dotusdt' },
+  { coinId: 'avalanche', symbol: 'avaxusdt' },
+  { coinId: 'chainlink', symbol: 'linkusdt' },
+  { coinId: 'polygon', symbol: 'maticusdt' },
+  { coinId: 'toncoin', symbol: 'tonusdt' },
 ];
 const PRICE_SOURCES_BY_BINANCE_SYMBOL = createPriceSourcesByBinanceSymbol();
 
