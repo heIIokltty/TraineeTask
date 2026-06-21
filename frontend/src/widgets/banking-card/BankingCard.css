@@ -70,63 +70,54 @@
   padding: 48px 39px 31px;
 }
 
-.banking-card__divider {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: var(--space-5);
-  margin: 23px 0 25px;
-  color: #a1a1a1;
-  font-size: 0.8125rem;
-}
-
-.banking-card__divider::before,
-.banking-card__divider::after {
-  height: 1px;
-  background: #c9c9c9;
-  content: "";
-}
-
-.banking-card__forgot-link,
-.banking-card__signup-link {
-  color: #1c0a2e;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  transition: color var(--transition-fast);
-}
-
-.banking-card__forgot-link:hover,
-.banking-card__forgot-link:focus-visible,
-.banking-card__signup-link:hover,
-.banking-card__signup-link:focus-visible {
-  color: #2b005d;
-}
-
-.banking-card__forgot-link {
-  display: block;
-  width: fit-content;
-  margin: 31px auto 0;
-  font-size: 1rem;
-  line-height: 1;
-  text-decoration: none;
-}
-
-.banking-card__footer {
-  color: #1c0a2e;
+.banking-card__journey-text,
+.banking-card__status,
+.banking-card__user-email {
+  color: rgb(28 10 46 / 70%);
   font-size: 1rem;
   line-height: 1;
   text-align: center;
 }
 
-.banking-card__signup-link {
-  display: block;
+.banking-card__journey-text {
+  margin-top: 31px;
+  color: #1c0a2e;
+}
+
+.banking-card__user {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-4);
+}
+
+.banking-card__avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 20px rgb(43 0 93 / 18%);
+}
+
+.banking-card__user-content {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  min-width: 0;
   width: 100%;
-  margin-left: 0;
-  padding: 13px var(--space-4);
-  border: 1px solid #d4c9a0;
-  border-radius: 4px;
-  color: #c2b675;
-  text-decoration: none;
+}
+
+.banking-card__user-name,
+.banking-card__user-email {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.banking-card__user-name {
+  color: #1c0a2e;
+  font-size: 1.25rem;
+  line-height: 1;
 }
 
 @media (width <= 1200px) {
@@ -179,9 +170,5 @@
 
   .banking-card__body {
     padding: 36px 20px 36px;
-  }
-
-  .banking-card__signup-link {
-    margin-left: 0;
   }
 }

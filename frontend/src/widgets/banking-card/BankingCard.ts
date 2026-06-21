@@ -2,6 +2,7 @@ import { createGoogleLoginButton } from '../../features/google-auth/ui/GoogleLog
 import type {
   AuthAccountType,
   AuthService,
+  AuthUser,
 } from '../../features/google-auth/model/auth.types';
 import './BankingCard.css';
 
@@ -53,43 +54,50 @@ export function createBankingCard({ authService }: BankingCardOptions): HTMLElem
   const bodyElement = document.createElement('div');
   bodyElement.className = 'banking-card__body';
 
-  const forgotPasswordLink = document.createElement('a');
-  forgotPasswordLink.className = 'banking-card__forgot-link';
-  forgotPasswordLink.href = '#google-login';
-  forgotPasswordLink.textContent = 'Start Your Journey Now!';
-
-  const dividerElement = document.createElement('div');
-  dividerElement.className = 'banking-card__divider';
-  dividerElement.innerHTML = '<span>or</span>';
-
-  const footerElement = document.createElement('p');
-  footerElement.className = 'banking-card__footer';
-
-  const signupLink = document.createElement('a');
-  signupLink.className = 'banking-card__signup-link';
-  signupLink.href = '#';
-  signupLink.textContent = 'Create account';
-  signupLink.addEventListener('click', (event) => {
-    event.preventDefault();
-    void authService.startSignUp(selectedAccountType);
-  });
-  footerElement.append(signupLink);
-
-  bodyElement.append(
-    createGoogleLoginButton({
-      authService,
-      getAccountType: () => selectedAccountType,
-    }),
-    forgotPasswordLink,
-    dividerElement,
-    footerElement,
-  );
-
   cardElement.append(headerElement, bodyElement);
 
   updateTabs();
+  renderLoadingState();
+  void renderAuthState();
 
   return cardElement;
+
+  async function renderAuthState(): Promise<void> {
+    try {
+      const user = await authService.getCurrentUser();
+
+      if (user) {
+        renderAuthenticatedState(user);
+        return;
+      }
+
+      renderUnauthenticatedState();
+    } catch {
+      renderUnauthenticatedState();
+    }
+  }
+
+  function renderLoadingState(): void {
+    bodyElement.innerHTML = '<p class="banking-card__status">Checking authorization...</p>';
+  }
+
+  function renderAuthenticatedState(user: AuthUser): void {
+    bodyElement.replaceChildren(createUserSummary(user));
+  }
+
+  function renderUnauthenticatedState(): void {
+    const journeyText = document.createElement('p');
+    journeyText.className = 'banking-card__journey-text';
+    journeyText.textContent = 'Start Your Journey Now!';
+
+    bodyElement.replaceChildren(
+      createGoogleLoginButton({
+        authService,
+        getAccountType: () => selectedAccountType,
+      }),
+      journeyText,
+    );
+  }
 
   function updateTabs(): void {
     const isPersonalSelected = selectedAccountType === 'personal';
@@ -99,6 +107,41 @@ export function createBankingCard({ authService }: BankingCardOptions): HTMLElem
     personalTab.setAttribute('aria-selected', String(isPersonalSelected));
     businessTab.setAttribute('aria-selected', String(!isPersonalSelected));
   }
+}
+
+function createUserSummary(user: AuthUser): HTMLElement {
+  const summaryElement = document.createElement('section');
+  summaryElement.className = 'banking-card__user';
+  summaryElement.setAttribute('aria-label', 'Signed in user');
+
+  if (user.picture) {
+    const avatarElement = document.createElement('img');
+    avatarElement.className = 'banking-card__avatar';
+    avatarElement.src = user.picture;
+    avatarElement.alt = '';
+    avatarElement.referrerPolicy = 'no-referrer';
+    summaryElement.append(avatarElement);
+  }
+
+  const contentElement = document.createElement('div');
+  contentElement.className = 'banking-card__user-content';
+
+  const labelElement = document.createElement('p');
+  labelElement.className = 'banking-card__status';
+  labelElement.textContent = 'Signed in as';
+
+  const nameElement = document.createElement('p');
+  nameElement.className = 'banking-card__user-name';
+  nameElement.textContent = user.name;
+
+  const emailElement = document.createElement('p');
+  emailElement.className = 'banking-card__user-email';
+  emailElement.textContent = user.email;
+
+  contentElement.append(labelElement, nameElement, emailElement);
+  summaryElement.append(contentElement);
+
+  return summaryElement;
 }
 
 function createTabButton(options: {
