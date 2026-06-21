@@ -9,5 +9,6 @@ export interface AuthUser {
 export interface AuthService {
   loginWithGoogle: (accountType: AuthAccountType) => void | Promise<void>;
   getCurrentUser: () => Promise<AuthUser | null>;
+  logout: () => void;
   startSignUp: (accountType: AuthAccountType) => void | Promise<void>;
 }

@@ -32,12 +32,12 @@ export function createBankingCard({ authService }: BankingCardOptions): HTMLElem
 
   const personalTab = createTabButton({
     accountType: 'personal',
-    desktopLabel: 'Sign In',
+    desktopLabel: 'Personal',
     mobileLabel: 'Personal',
   });
   const businessTab = createTabButton({
     accountType: 'business',
-    desktopLabel: 'Enter Email',
+    desktopLabel: 'Business',
     mobileLabel: 'Business',
   });
   personalTab.addEventListener('click', () => {
@@ -82,7 +82,7 @@ export function createBankingCard({ authService }: BankingCardOptions): HTMLElem
   }
 
   function renderAuthenticatedState(user: AuthUser): void {
-    bodyElement.replaceChildren(createUserSummary(user));
+    bodyElement.replaceChildren(createUserSummary(user), createLogoutButton());
   }
 
   function renderUnauthenticatedState(): void {
@@ -106,6 +106,19 @@ export function createBankingCard({ authService }: BankingCardOptions): HTMLElem
     businessTab.classList.toggle('banking-card__tab--active', !isPersonalSelected);
     personalTab.setAttribute('aria-selected', String(isPersonalSelected));
     businessTab.setAttribute('aria-selected', String(!isPersonalSelected));
+  }
+
+  function createLogoutButton(): HTMLButtonElement {
+    const buttonElement = document.createElement('button');
+    buttonElement.className = 'banking-card__logout-button';
+    buttonElement.type = 'button';
+    buttonElement.textContent = 'Log out';
+    buttonElement.addEventListener('click', () => {
+      authService.logout();
+      renderUnauthenticatedState();
+    });
+
+    return buttonElement;
   }
 }
 

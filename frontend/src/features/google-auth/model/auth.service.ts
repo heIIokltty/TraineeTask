@@ -11,6 +11,10 @@ export function getAuthToken(): string | null {
   return localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
 }
 
+export function clearAuthToken(): void {
+  localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+}
+
 export function createAuthService(): AuthService {
   return {
     loginWithGoogle(accountType): void {
@@ -32,7 +36,7 @@ export function createAuthService(): AuthService {
       });
 
       if (response.status === 401) {
-        localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+        clearAuthToken();
         return null;
       }
 
@@ -41,6 +45,9 @@ export function createAuthService(): AuthService {
       }
 
       return (await response.json()) as AuthUser;
+    },
+    logout(): void {
+      clearAuthToken();
     },
     startSignUp(accountType): void {
       window.dispatchEvent(
