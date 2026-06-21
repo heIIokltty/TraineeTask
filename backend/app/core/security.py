@@ -26,9 +26,10 @@ def create_access_token(user: User, secret: str) -> str:
     return encode_jwt(payload, secret)
 
 
-def create_oauth_state(secret: str) -> str:
+def create_oauth_state(secret: str, account_type: str) -> str:
     payload = {
         "typ": "oauth_state",
+        "account_type": account_type,
         "jti": secrets.token_urlsafe(24),
         "exp": int(time.time()) + OAUTH_STATE_TTL_SECONDS,
     }
@@ -36,11 +37,13 @@ def create_oauth_state(secret: str) -> str:
     return encode_jwt(payload, secret)
 
 
-def verify_oauth_state(token: str, secret: str) -> None:
+def verify_oauth_state(token: str, secret: str) -> dict[str, Any]:
     payload = decode_jwt(token, secret)
 
     if payload.get("typ") != "oauth_state":
         raise AuthenticationError("Invalid OAuth state.")
+
+    return payload
 
 
 def decode_access_token(token: str, secret: str) -> User:

@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -6,6 +8,8 @@ from app.presentation.routes import auth, health
 
 
 def create_app() -> FastAPI:
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(name)s:%(message)s")
+    logging.getLogger("kairos").setLevel(logging.INFO)
     settings = get_settings()
     app = FastAPI(title=settings.app_name)
 

@@ -14,8 +14,8 @@ class StartGoogleOAuthUseCase:
         self._google_oauth_client = google_oauth_client
         self._settings = settings
 
-    def execute(self) -> str:
-        state = create_oauth_state(self._settings.jwt_secret)
+    def execute(self, account_type: str) -> str:
+        state = create_oauth_state(self._settings.jwt_secret, account_type)
 
         return self._google_oauth_client.build_authorization_url(state)
 
@@ -25,11 +25,12 @@ class CompleteGoogleOAuthUseCase:
         self._google_oauth_client = google_oauth_client
         self._settings = settings
 
-    def execute(self, code: str, state: str) -> str:
-        verify_oauth_state(state, self._settings.jwt_secret)
+    def execute(self, code: str, state: str) -> tuple[str, User, str]:
+        state_payload = verify_oauth_state(state, self._settings.jwt_secret)
+        account_type = str(state_payload.get("account_type") or "unknown")
         user = self._google_oauth_client.fetch_user(code)
 
-        return create_access_token(user, self._settings.jwt_secret)
+        return create_access_token(user, self._settings.jwt_secret), user, account_type
 
 
 class GetCurrentUserUseCase:

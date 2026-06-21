@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => {
     server: {
       host: env.VITE_DEV_SERVER_HOST || '127.0.0.1',
       port: Number(env.VITE_DEV_SERVER_PORT) || 5173,
+      strictPort: true,
       proxy: devApiProxyTarget
         ? {
             '/api': {
@@ -20,6 +21,7 @@ export default defineConfig(({ mode }) => {
     preview: {
       host: env.VITE_PREVIEW_SERVER_HOST || '127.0.0.1',
       port: Number(env.VITE_PREVIEW_SERVER_PORT) || 4173,
+      strictPort: true,
     },
   };
 });

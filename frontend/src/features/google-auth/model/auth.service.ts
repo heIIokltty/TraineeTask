@@ -19,8 +19,13 @@ export function createAuthService(): AuthService {
   return {
     loginWithGoogle(accountType): void {
       const searchParams = new URLSearchParams({ accountType });
+      const redirectUrl = `${appConfig.apiBaseUrl}/api/auth/google/start?${searchParams}`;
 
-      window.location.assign(`${appConfig.apiBaseUrl}/api/auth/google/start?${searchParams}`);
+      logAuthDebug('oauth.start.redirect', {
+        accountType,
+        redirectUrl,
+      });
+      window.location.assign(redirectUrl);
     },
     async getCurrentUser(): Promise<AuthUser | null> {
       const token = getAuthToken();
@@ -59,4 +64,12 @@ export function createAuthService(): AuthService {
       );
     },
   };
+}
+
+function logAuthDebug(message: string, context: Record<string, string>): void {
+  if (!import.meta.env.DEV) {
+    return;
+  }
+
+  console.info(`[auth] ${message}`, context);
 }

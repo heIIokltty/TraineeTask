@@ -1,4 +1,5 @@
 import json
+import logging
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
@@ -13,6 +14,7 @@ GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo"
 GOOGLE_OAUTH_SCOPES = ("openid", "email", "profile")
 HTTP_TIMEOUT_SECONDS = 10
+logger = logging.getLogger("kairos.auth")
 
 
 class GoogleOAuthClient:
@@ -37,13 +39,20 @@ class GoogleOAuthClient:
 
     def fetch_user(self, code: str) -> User:
         self._ensure_configured()
+        logger.info("oauth.google.exchange_start code_present=%s", bool(code))
         token_payload = self._exchange_code(code)
+        logger.info(
+            "oauth.google.exchange_success access_token_present=%s id_token_present=%s",
+            isinstance(token_payload.get("access_token"), str),
+            isinstance(token_payload.get("id_token"), str),
+        )
         access_token = token_payload.get("access_token")
 
         if not isinstance(access_token, str):
             raise AuthenticationError("Google did not return an access token.")
 
         userinfo = self._fetch_userinfo(access_token)
+        logger.info("oauth.google.userinfo_success email_present=%s", bool(userinfo.get("email")))
         email = userinfo.get("email")
 
         if not isinstance(email, str) or not email:

@@ -1,36 +1,80 @@
 import { saveAuthToken } from '../../features/google-auth/model/auth.service';
 
+const AUTH_REDIRECT_DELAY_MS = 100;
+
 export function createAuthCallbackPage(): HTMLElement {
   const pageElement = document.createElement('main');
   pageElement.className = 'app-placeholder';
   const token = getTokenFromLocation(window.location);
   const error = getErrorFromLocation(window.location);
-  const errorMessage = escapeHtml(error ?? 'No authorization token was returned by the backend.');
+
+  logAuthCallbackDebug('callback.loaded', {
+    tokenPresent: String(Boolean(token)),
+    errorPresent: String(Boolean(error)),
+    path: window.location.pathname,
+  });
 
   if (token) {
     saveAuthToken(token);
-    window.location.replace('/');
+    logAuthCallbackDebug('callback.token_saved', {
+      nextPath: '/',
+    });
+
+    pageElement.append(
+      createMessageSection({
+        title: 'Signing you in',
+        text: 'Redirecting to the home page.',
+      }),
+    );
+    window.setTimeout(() => window.location.replace('/'), AUTH_REDIRECT_DELAY_MS);
+
+    return pageElement;
   }
 
-  pageElement.innerHTML = token
-    ? `
-    <section class="app-placeholder__content" aria-labelledby="auth-callback-title">
-      <p class="app-placeholder__eyebrow">OAuth</p>
-      <h1 class="app-placeholder__title" id="auth-callback-title">Signing you in</h1>
-      <p class="app-placeholder__text">Redirecting to the home page.</p>
-    </section>
-  `
-    : `
-    <section class="app-placeholder__content" aria-labelledby="auth-callback-title">
-      <p class="app-placeholder__eyebrow">OAuth</p>
-      <h1 class="app-placeholder__title" id="auth-callback-title">Sign in failed</h1>
-      <p class="app-placeholder__text">
-        ${errorMessage}
-      </p>
-    </section>
-  `;
+  pageElement.append(
+    createMessageSection({
+      title: 'Sign in failed',
+      text: error ?? 'No authorization token was returned by the backend.',
+      showRetryButton: true,
+    }),
+  );
 
   return pageElement;
+}
+
+function createMessageSection(options: {
+  title: string;
+  text: string;
+  showRetryButton?: boolean;
+}): HTMLElement {
+  const sectionElement = document.createElement('section');
+  sectionElement.className = 'app-placeholder__content';
+  sectionElement.setAttribute('aria-labelledby', 'auth-callback-title');
+
+  const eyebrowElement = document.createElement('p');
+  eyebrowElement.className = 'app-placeholder__eyebrow';
+  eyebrowElement.textContent = 'OAuth';
+
+  const titleElement = document.createElement('h1');
+  titleElement.className = 'app-placeholder__title';
+  titleElement.id = 'auth-callback-title';
+  titleElement.textContent = options.title;
+
+  const textElement = document.createElement('p');
+  textElement.className = 'app-placeholder__text';
+  textElement.textContent = options.text;
+
+  sectionElement.append(eyebrowElement, titleElement, textElement);
+
+  if (options.showRetryButton) {
+    const retryLink = document.createElement('a');
+    retryLink.className = 'app-placeholder__button';
+    retryLink.href = '/';
+    retryLink.textContent = 'Try again';
+    sectionElement.append(retryLink);
+  }
+
+  return sectionElement;
 }
 
 function getTokenFromLocation(location: Location): string | null {
@@ -41,14 +85,16 @@ function getTokenFromLocation(location: Location): string | null {
 }
 
 function getErrorFromLocation(location: Location): string | null {
+  const hashParams = new URLSearchParams(location.hash.replace(/^#/, ''));
   const queryParams = new URLSearchParams(location.search);
 
-  return queryParams.get('error');
+  return queryParams.get('error') ?? hashParams.get('error');
 }
 
-function escapeHtml(value: string): string {
-  const element = document.createElement('span');
-  element.textContent = value;
+function logAuthCallbackDebug(message: string, context: Record<string, string>): void {
+  if (!import.meta.env.DEV) {
+    return;
+  }
 
-  return element.innerHTML;
+  console.info(`[auth] ${message}`, context);
 }
