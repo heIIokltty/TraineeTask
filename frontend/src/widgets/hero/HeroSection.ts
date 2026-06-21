@@ -54,11 +54,18 @@ export function createHeroSection(): HTMLElement {
   learnMoreLink.className = 'hero-section__button hero-section__button--primary';
   learnMoreLink.href = '#about';
   learnMoreLink.innerHTML = '<span>Learn More</span><span aria-hidden="true">-></span>';
+  learnMoreLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    openModal(createLearnMoreModal());
+  });
 
   const playVideoButton = document.createElement('button');
   playVideoButton.className = 'hero-section__button hero-section__button--secondary';
   playVideoButton.type = 'button';
   playVideoButton.innerHTML = '<span>Play Video</span><span aria-hidden="true">&gt;</span>';
+  playVideoButton.addEventListener('click', () => {
+    openModal(createVideoModal());
+  });
 
   actionsElement.append(learnMoreLink, playVideoButton);
   copyElement.append(actionsElement);
@@ -72,4 +79,91 @@ export function createHeroSection(): HTMLElement {
   });
 
   return sectionElement;
+}
+
+function openModal(contentElement: HTMLElement): void {
+  const modalElement = document.createElement('div');
+  modalElement.className = 'hero-modal';
+  modalElement.setAttribute('role', 'dialog');
+  modalElement.setAttribute('aria-modal', 'true');
+
+  const closeButton = document.createElement('button');
+  closeButton.className = 'hero-modal__close';
+  closeButton.type = 'button';
+  closeButton.setAttribute('aria-label', 'Close popup');
+  closeButton.textContent = '×';
+
+  modalElement.append(contentElement, closeButton);
+  document.body.append(modalElement);
+  document.body.classList.add('hero-modal-open');
+  closeButton.focus();
+
+  closeButton.addEventListener('click', closeModal);
+  modalElement.addEventListener('click', (event) => {
+    if (event.target === modalElement) {
+      closeModal();
+    }
+  });
+  document.addEventListener('keydown', handleKeydown);
+
+  function handleKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Escape') {
+      closeModal();
+    }
+  }
+
+  function closeModal(): void {
+    const videoElement = modalElement.querySelector('video');
+    videoElement?.pause();
+    document.removeEventListener('keydown', handleKeydown);
+    document.body.classList.remove('hero-modal-open');
+    modalElement.remove();
+  }
+}
+
+function createLearnMoreModal(): HTMLElement {
+  const articleElement = document.createElement('article');
+  articleElement.className = 'hero-modal__panel hero-modal__panel--learn-more';
+  articleElement.innerHTML = `
+    <h2 class="hero-modal__title">The Digital Bridge Between Reality and Tomorrow</h2>
+    <div class="hero-modal__text">
+      <p>
+        When you turn on your smart alarm clock in the morning of 2026, it already knows
+        you slept seventeen minutes less than usual. The algorithm picks a morning playlist
+        based on your heart rate and the current moon phase.
+      </p>
+      <p>
+        Your voice assistant, trained on thousands of previous conversations, does not just
+        say good morning. It reminds you about the package, the meeting and the weather
+        before you ask.
+      </p>
+      <p>
+        In the evening, dark matter mode dims the lights gradually, moves bandwidth to stream
+        a movie in 32K and updates the subtitles on screen. The future becomes a carefully
+        curated interface around you.
+      </p>
+    </div>
+  `;
+
+  return articleElement;
+}
+
+function createVideoModal(): HTMLElement {
+  const videoPanelElement = document.createElement('div');
+  videoPanelElement.className = 'hero-modal__panel hero-modal__panel--video';
+
+  const videoElement = document.createElement('video');
+  videoElement.className = 'hero-modal__video';
+  videoElement.controls = true;
+  videoElement.playsInline = true;
+  videoElement.preload = 'metadata';
+
+  const sourceElement = document.createElement('source');
+  sourceElement.src = HERO_VIDEO_SOURCE;
+  sourceElement.type = 'video/webm';
+  videoElement.append(sourceElement);
+
+  videoPanelElement.append(videoElement);
+
+  return videoPanelElement;
 }

@@ -17,6 +17,7 @@ function createNavigationItem(label: string): HTMLLIElement {
 }
 
 export function createHeader(): HTMLElement {
+  let isMenuOpen = false;
   const headerElement = document.createElement('header');
   headerElement.className = 'header';
 
@@ -38,14 +39,43 @@ export function createHeader(): HTMLElement {
   const navigationElement = document.createElement('nav');
   navigationElement.className = 'header__nav';
   navigationElement.setAttribute('aria-label', 'Primary navigation');
+  navigationElement.id = 'primary-navigation';
 
   const listElement = document.createElement('ul');
   listElement.className = 'header__nav-list';
   navigationItems.forEach((item) => listElement.append(createNavigationItem(item)));
 
+  const menuToggleElement = document.createElement('button');
+  menuToggleElement.className = 'header__menu-toggle';
+  menuToggleElement.type = 'button';
+  menuToggleElement.setAttribute('aria-controls', navigationElement.id);
+  menuToggleElement.setAttribute('aria-expanded', 'false');
+  menuToggleElement.setAttribute('aria-label', 'Open navigation menu');
+  menuToggleElement.innerHTML = '<span></span><span></span><span></span>';
+  menuToggleElement.addEventListener('click', () => {
+    setMenuOpen(!isMenuOpen);
+  });
+
+  listElement.addEventListener('click', (event) => {
+    if (event.target instanceof HTMLAnchorElement) {
+      setMenuOpen(false);
+    }
+  });
+
   navigationElement.append(listElement);
-  innerElement.append(logoElement, navigationElement);
+  innerElement.append(logoElement, menuToggleElement, navigationElement);
   headerElement.append(innerElement);
 
   return headerElement;
+
+  function setMenuOpen(nextIsMenuOpen: boolean): void {
+    isMenuOpen = nextIsMenuOpen;
+    headerElement.classList.toggle('header--menu-open', isMenuOpen);
+    menuToggleElement.classList.toggle('header__menu-toggle--open', isMenuOpen);
+    menuToggleElement.setAttribute('aria-expanded', String(isMenuOpen));
+    menuToggleElement.setAttribute(
+      'aria-label',
+      isMenuOpen ? 'Close navigation menu' : 'Open navigation menu',
+    );
+  }
 }
