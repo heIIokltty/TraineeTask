@@ -384,6 +384,10 @@
     padding: 82px 0 68px;
   }
 
+  .crypto-board__line-layer {
+    display: none;
+  }
+
   .crypto-board__content {
     width: min(100% - 32px, var(--layout-content-width));
     min-height: auto;
