@@ -213,26 +213,67 @@ body.hero-modal-open {
 }
 
 .hero-modal__close {
-  position: fixed;
-  top: clamp(30px, 6vw, 104px);
-  right: clamp(20px, 11.8vw, 228px);
-  display: grid;
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 2;
+  display: block;
   width: 48px;
   height: 48px;
-  place-items: center;
   border: 0;
   border-radius: 50%;
   background: #390071;
-  box-shadow: 0 0 28px rgb(57 0 113 / 46%);
-  color: var(--color-white);
-  font-size: 2.25rem;
-  font-weight: var(--font-weight-regular);
-  line-height: 1;
+  box-shadow:
+    0 0 28px rgb(57 0 113 / 46%),
+    inset 0 0 12px rgb(255 255 255 / 8%);
+  color: transparent;
+  font-size: 0;
+  line-height: 0;
+  transition:
+    background-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.hero-modal__close::before,
+.hero-modal__close::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 22px;
+  height: 3px;
+  border-radius: var(--radius-pill);
+  background: var(--color-white);
+  content: "";
+  transform-origin: center;
+}
+
+.hero-modal__close::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.hero-modal__close::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.hero-modal__close:hover,
+.hero-modal__close:focus-visible {
+  background: #4c008f;
+  box-shadow:
+    0 0 32px rgb(76 0 143 / 58%),
+    inset 0 0 14px rgb(255 255 255 / 10%);
+  transform: scale(1.04);
+}
+
+.hero-modal__close:focus-visible {
+  outline: 2px solid var(--color-white);
+  outline-offset: var(--space-2);
 }
 
 .hero-modal__panel {
   position: relative;
   width: min(100%, 1465px);
+  overflow: visible;
 }
 
 .hero-modal__panel--learn-more {
@@ -412,10 +453,15 @@ body.hero-modal-open {
   }
 
   .hero-modal__close {
-    top: 274px;
-    right: 20px;
+    top: 18px;
+    right: 18px;
     width: 54px;
     height: 54px;
+  }
+
+  .hero-modal__close::before,
+  .hero-modal__close::after {
+    width: 24px;
   }
 
   .hero-modal__panel--video {

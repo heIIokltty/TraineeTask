@@ -97,7 +97,8 @@ function openModal(contentElement: HTMLElement): void {
   closeButton.setAttribute('aria-label', 'Close popup');
   closeButton.textContent = '×';
 
-  modalElement.append(contentElement, closeButton);
+  contentElement.append(closeButton);
+  modalElement.append(contentElement);
   document.body.append(modalElement);
   document.body.classList.add('hero-modal-open');
   closeButton.focus();
