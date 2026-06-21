@@ -3,13 +3,13 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: 40px;
+  min-height: 49px;
   gap: 10px;
   border: 0;
   border-radius: 3px;
   background: #c2b675;
   color: var(--color-white);
-  font-size: 0.8125rem;
+  font-size: 1rem;
   font-weight: var(--font-weight-medium);
   line-height: 1;
   transition:

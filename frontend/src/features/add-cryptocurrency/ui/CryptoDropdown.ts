@@ -36,7 +36,7 @@ export function createCryptoDropdown(options: CryptoDropdownOptions): CryptoDrop
   triggerElement.setAttribute('aria-expanded', 'false');
   triggerElement.innerHTML = `
     <span>Add a Cryptocurrency</span>
-    <span aria-hidden="true">&gt;</span>
+    <span aria-hidden="true">›</span>
   `;
 
   const menuElement = document.createElement('div');

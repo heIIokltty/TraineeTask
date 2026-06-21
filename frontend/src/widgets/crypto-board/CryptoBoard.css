@@ -1,7 +1,7 @@
 .crypto-board {
   position: relative;
   overflow: hidden;
-  min-height: 100vh;
+  min-height: 1077px;
   padding: 84px 0 76px;
   background:
     radial-gradient(circle at 50% 54%, rgb(19 67 109 / 60%) 0 20%, rgb(9 42 73 / 38%) 38%, rgb(3 20 38 / 0%) 63%),
@@ -12,10 +12,10 @@
 .crypto-board__content {
   position: relative;
   z-index: var(--z-index-base);
-  --circle-size: min(56vw, 760px);
-  --crypto-radius: clamp(360px, 30vw, 402px);
-  width: min(100% - 96px, 1540px);
-  min-height: 780px;
+  --circle-size: 760px;
+  --crypto-radius: 0;
+  width: min(100% - 160px, 1760px);
+  min-height: 917px;
   margin: 0 auto;
 }
 
@@ -56,15 +56,15 @@
 }
 
 .crypto-board__frame--top-left {
-  top: 72px;
-  left: 8px;
+  top: 66px;
+  left: 552px;
   width: 330px;
   height: 250px;
 }
 
 .crypto-board__frame--bottom-right {
-  right: 8px;
-  bottom: 34px;
+  right: 552px;
+  bottom: 94px;
   width: 430px;
   height: 160px;
 }
@@ -76,7 +76,7 @@
 
 .crypto-board__center {
   position: absolute;
-  top: 50%;
+  top: 468px;
   left: 50%;
   z-index: 2;
   display: grid;
@@ -147,7 +147,7 @@
   z-index: 1;
   display: grid;
   justify-items: center;
-  gap: 52px;
+  gap: 50px;
   margin-top: 10px;
 }
 
@@ -174,17 +174,17 @@
 .crypto-board__cards .crypto-card {
   position: absolute;
   pointer-events: auto;
-  top: 50%;
+  top: calc(260px + (var(--card-index) * 102px));
   left: 50%;
-  transform:
-    rotate(var(--angle))
-    translateX(var(--crypto-radius))
-    rotate(calc(-1 * var(--angle)))
-    translate(var(--card-shift-x), -50%);
+  transform: translate(-610px, -50%);
   opacity: 1;
   transition:
     opacity 240ms ease,
     transform 300ms ease;
+}
+
+.crypto-board__cards .crypto-card--right {
+  transform: translate(390px, -50%);
 }
 
 .crypto-board__cards .crypto-card--enter {
@@ -295,6 +295,7 @@
 @media (width <= 1240px) {
   .crypto-board {
     padding-top: 100px;
+    min-height: 1174px;
   }
 
   .crypto-board__content {
@@ -303,7 +304,7 @@
   }
 
   .crypto-board__center {
-    top: 280px;
+    top: 300px;
     width: min(88vw, 540px);
     min-width: 0;
   }
@@ -318,6 +319,10 @@
 
   .crypto-board__cards .crypto-card {
     position: static;
+    transform: none;
+  }
+
+  .crypto-board__cards .crypto-card--right {
     transform: none;
   }
 }

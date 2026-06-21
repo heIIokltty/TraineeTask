@@ -13,7 +13,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: min(100% - 104px, 1760px);
+  width: min(100% - 160px, 1760px);
   margin: 0 auto;
   padding: 26px 0 18px;
   gap: var(--space-8);
@@ -160,7 +160,7 @@
     min-width: 484px;
     height: 100vh;
     padding: 288px 0 0 112px;
-    background: #052543;
+    background: #2b005d;
     opacity: 0;
     pointer-events: none;
     transform: translateX(100%);

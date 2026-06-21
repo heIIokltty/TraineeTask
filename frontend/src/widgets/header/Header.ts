@@ -31,7 +31,7 @@ export function createHeader(): HTMLElement {
 
   const logoImage = document.createElement('img');
   logoImage.className = 'header__logo-image';
-  logoImage.src = '/assets/kairos-logo.png';
+  logoImage.src = '/assets/kairos-logo-trimmed.png';
   logoImage.alt = 'KAIROS';
 
   logoElement.append(logoImage);

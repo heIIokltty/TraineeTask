@@ -2,7 +2,9 @@ import { createAuthService } from '../../features/google-auth/model/auth.service
 import { createBankingCard } from '../banking-card/BankingCard';
 import './HeroSection.css';
 
-const HERO_VIDEO_SOURCE = 'videos/HP.webm';
+const HERO_VIDEO_SOURCE = 'videos/HP.mp4';
+const HERO_VIDEO_FALLBACK_SOURCE = 'videos/HP.webm';
+const HERO_VIDEO_POSTER = 'images/hero-poster.png';
 
 export function createHeroSection(): HTMLElement {
   const authService = createAuthService();
@@ -18,6 +20,7 @@ export function createHeroSection(): HTMLElement {
   videoElement.loop = true;
   videoElement.playsInline = true;
   videoElement.preload = 'auto';
+  videoElement.poster = HERO_VIDEO_POSTER;
   videoElement.setAttribute('aria-hidden', 'true');
   videoElement.setAttribute('autoplay', '');
   videoElement.setAttribute('muted', '');
@@ -27,8 +30,11 @@ export function createHeroSection(): HTMLElement {
 
   const sourceElement = document.createElement('source');
   sourceElement.src = HERO_VIDEO_SOURCE;
-  sourceElement.type = 'video/webm';
-  videoElement.append(sourceElement);
+  sourceElement.type = 'video/mp4';
+  const fallbackSourceElement = document.createElement('source');
+  fallbackSourceElement.src = HERO_VIDEO_FALLBACK_SOURCE;
+  fallbackSourceElement.type = 'video/webm';
+  videoElement.append(sourceElement, fallbackSourceElement);
 
   const overlayElement = document.createElement('div');
   overlayElement.className = 'hero-section__overlay';
@@ -53,7 +59,7 @@ export function createHeroSection(): HTMLElement {
   const learnMoreLink = document.createElement('a');
   learnMoreLink.className = 'hero-section__button hero-section__button--primary';
   learnMoreLink.href = '#about';
-  learnMoreLink.innerHTML = '<span>Learn More</span><span aria-hidden="true">-></span>';
+  learnMoreLink.innerHTML = '<span>Learn More</span><span aria-hidden="true">→</span>';
   learnMoreLink.addEventListener('click', (event) => {
     event.preventDefault();
     openModal(createLearnMoreModal());
@@ -62,7 +68,7 @@ export function createHeroSection(): HTMLElement {
   const playVideoButton = document.createElement('button');
   playVideoButton.className = 'hero-section__button hero-section__button--secondary';
   playVideoButton.type = 'button';
-  playVideoButton.innerHTML = '<span>Play Video</span><span aria-hidden="true">&gt;</span>';
+  playVideoButton.innerHTML = '<span>Play Video</span><span aria-hidden="true">▶</span>';
   playVideoButton.addEventListener('click', () => {
     openModal(createVideoModal());
   });
@@ -128,19 +134,27 @@ function createLearnMoreModal(): HTMLElement {
     <h2 class="hero-modal__title">The Digital Bridge Between Reality and Tomorrow</h2>
     <div class="hero-modal__text">
       <p>
-        When you turn on your smart alarm clock in the morning of 2026, it already knows
-        you slept seventeen minutes less than usual. The algorithm picks a morning playlist
-        based on your heart rate and the current moon phase.
+        When you turn on your smart alarm clock in the morning of 2026, it already knows you
+        slept seventeen minutes less than usual. The algorithm picks a morning playlist based
+        on your heart rate and the current moon phase. Your voice assistant, trained on
+        thousands of previous conversations, doesn't just say “good morning” - it reminds you:
+        “Don't forget to pick up your package from the drone post before 10:30 AM.” You step up
+        to the mirror, and instead of your reflection, you see graphs of your hydration levels,
+        your daily schedule, and a suggestion: “You might want to take extra vitamin D - it's
+        going to be cloudy today.”
       </p>
       <p>
-        Your voice assistant, trained on thousands of previous conversations, does not just
-        say good morning. It reminds you about the package, the meeting and the weather
-        before you ask.
+        In the evening, you activate “dark matter” mode at home: the lights dim gradually,
+        following your movement; the Wi-Fi reallocates bandwidth to stream a movie in 32K; and
+        the lounge chair warms up exactly the spot on your back that got tired from sitting. On
+        screen - not just a film: a generative neural network adjusts the subtitles, replaces
+        store signs with brands you recognize, and even redubs the actors if you whisper a
+        request.
       </p>
       <p>
-        In the evening, dark matter mode dims the lights gradually, moves bandwidth to stream
-        a movie in 32K and updates the subtitles on screen. The future becomes a carefully
-        curated interface around you.
+        When you turn on your smart alarm clock in the morning of 2026, it already knows you
+        slept seventeen minutes less than usual. The algorithm picks a morning playlist based
+        on your heart rate and the current moon phase.
       </p>
     </div>
   `;
@@ -157,11 +171,15 @@ function createVideoModal(): HTMLElement {
   videoElement.controls = true;
   videoElement.playsInline = true;
   videoElement.preload = 'metadata';
+  videoElement.poster = HERO_VIDEO_POSTER;
 
   const sourceElement = document.createElement('source');
   sourceElement.src = HERO_VIDEO_SOURCE;
-  sourceElement.type = 'video/webm';
-  videoElement.append(sourceElement);
+  sourceElement.type = 'video/mp4';
+  const fallbackSourceElement = document.createElement('source');
+  fallbackSourceElement.src = HERO_VIDEO_FALLBACK_SOURCE;
+  fallbackSourceElement.type = 'video/webm';
+  videoElement.append(sourceElement, fallbackSourceElement);
 
   videoPanelElement.append(videoElement);
 

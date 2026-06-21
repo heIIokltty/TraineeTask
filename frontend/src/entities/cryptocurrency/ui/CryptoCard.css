@@ -6,7 +6,7 @@
   width: max-content;
   max-width: none;
   min-height: 48px;
-  gap: 12px;
+  gap: 26px;
   color: var(--color-white);
   white-space: nowrap;
 }
@@ -15,7 +15,7 @@
 .crypto-card__name {
   flex: 0 0 auto;
   color: var(--color-white);
-  font-size: clamp(0.95rem, 1.1vw, 1.25rem);
+  font-size: clamp(0.95rem, 1vw, 1.15rem);
   line-height: 1;
   text-shadow: 0 0 14px rgb(255 255 255 / 18%);
   white-space: nowrap;
@@ -65,7 +65,7 @@
   .crypto-card {
     --crypto-card-icon-size: 29px;
 
-    gap: 10px;
+    gap: 14px;
   }
 
   .crypto-card__name {

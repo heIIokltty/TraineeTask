@@ -17,6 +17,7 @@ type CryptoBoardSide = 'left' | 'right';
 const LEFT_BASE_COIN_IDS: ReadonlyArray<CryptocurrencyId> = [
   'bitcoin',
   'ethereum',
+  'solana',
   'xrp',
   'usd-coin',
 ];
@@ -26,6 +27,7 @@ const RIGHT_BASE_COIN_IDS: ReadonlyArray<CryptocurrencyId> = [
   'midnight',
   'dogecoin',
   'sui',
+  'tether',
 ];
 
 const LEFT_ANGLE_RANGE = {
@@ -219,6 +221,7 @@ export function createCryptoBoard(): HTMLElement {
       cardElement.classList.toggle('crypto-card--right', side === 'right');
       cardElement.style.setProperty('--angle', `${angle}deg`);
       cardElement.style.setProperty('--card-shift-x', side === 'right' ? '0%' : '-100%');
+      cardElement.style.setProperty('--card-index', String(index));
       cardsElement.append(cardElement);
       updateCryptoCardPrice(cardElement, cryptocurrency.price);
     });

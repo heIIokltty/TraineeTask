@@ -29,8 +29,16 @@ export function createBankingCard({ authService }: BankingCardOptions): HTMLElem
   tabsElement.setAttribute('role', 'tablist');
   tabsElement.setAttribute('aria-label', 'Account type');
 
-  const personalTab = createTabButton('Personal', 'personal');
-  const businessTab = createTabButton('Business', 'business');
+  const personalTab = createTabButton({
+    accountType: 'personal',
+    desktopLabel: 'Sign In',
+    mobileLabel: 'Personal',
+  });
+  const businessTab = createTabButton({
+    accountType: 'business',
+    desktopLabel: 'Enter Email',
+    mobileLabel: 'Business',
+  });
   personalTab.addEventListener('click', () => {
     selectedAccountType = 'personal';
     updateTabs();
@@ -93,17 +101,20 @@ export function createBankingCard({ authService }: BankingCardOptions): HTMLElem
   }
 }
 
-function createTabButton(
-  label: string,
-  accountType: AuthAccountType,
-): HTMLButtonElement {
+function createTabButton(options: {
+  accountType: AuthAccountType;
+  desktopLabel: string;
+  mobileLabel: string;
+}): HTMLButtonElement {
   const buttonElement = document.createElement('button');
   buttonElement.className = 'banking-card__tab';
   buttonElement.type = 'button';
   buttonElement.setAttribute('role', 'tab');
   buttonElement.setAttribute('aria-selected', 'false');
-  buttonElement.dataset.accountType = accountType;
-  buttonElement.textContent = label;
+  buttonElement.setAttribute('aria-label', options.mobileLabel);
+  buttonElement.dataset.accountType = options.accountType;
+  buttonElement.dataset.desktopLabel = options.desktopLabel;
+  buttonElement.dataset.mobileLabel = options.mobileLabel;
 
   return buttonElement;
 }

@@ -88,8 +88,6 @@ export class BinancePriceStream implements CryptoPriceStream {
   }
 
   private openSocket(): void {
-    this.emitLoadingPrices();
-
     const socket = new WebSocket(createBinanceStreamUrl());
     this.socket = socket;
 
@@ -136,25 +134,6 @@ export class BinancePriceStream implements CryptoPriceStream {
 
     window.clearTimeout(this.reconnectTimerId);
     this.reconnectTimerId = null;
-  }
-
-  private emitLoadingPrices(): void {
-    getStreamedCoinIds().forEach((coinId) => {
-      this.prices.set(coinId, {
-        coinId,
-        value: null,
-        status: 'loading',
-      });
-    });
-    getUnsupportedCoinIds().forEach((coinId) => {
-      this.prices.set(coinId, {
-        coinId,
-        value: null,
-        status: 'error',
-      });
-    });
-
-    this.emitPrices();
   }
 
   private emitErrorPrices(): void {
@@ -229,12 +208,6 @@ function getStreamedSymbols(): string[] {
 function getStreamedCoinIds(): CryptocurrencyId[] {
   return BINANCE_PRICE_SOURCES
     .filter((source) => Boolean(source.symbol))
-    .map((source) => source.coinId);
-}
-
-function getUnsupportedCoinIds(): CryptocurrencyId[] {
-  return BINANCE_PRICE_SOURCES
-    .filter((source) => !source.symbol)
     .map((source) => source.coinId);
 }
 
