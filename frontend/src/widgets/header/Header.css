@@ -29,10 +29,19 @@
 
 .header__logo-image {
   display: block;
-  width: clamp(112px, 11vw, 176px);
+  width: clamp(200px, 14vw, 248px);
   height: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 0 8px rgb(255 255 255 / 18%));
+}
+
+@media (width <= 900px) {
+  .header__logo-image {
+    width: 600px;
+  }
+}
+@media (width <= 640px) {
+  .header__logo-image {
+    width: 600px;
+  }
 }
 
 .header__menu-toggle {
@@ -102,7 +111,7 @@
   }
 
   .header__logo-image {
-    width: 176px;
+    width: 220px;
   }
 
   .header__menu-toggle {
@@ -199,7 +208,7 @@
   }
 
   .header__logo-image {
-    width: 104px;
+    width: 140px;
   }
 
   .header__menu-toggle {

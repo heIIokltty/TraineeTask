@@ -24,6 +24,16 @@
     transform var(--transition-fast);
 }
 
+.crypto-dropdown__trigger-icon {
+  display: inline-block;
+  transition: transform var(--transition-fast);
+  transform-origin: center;
+}
+
+.crypto-dropdown__trigger--open .crypto-dropdown__trigger-icon {
+  transform: rotate(90deg);
+}
+
 .crypto-dropdown__trigger::after {
   position: absolute;
   bottom: -7px;

@@ -36,7 +36,7 @@ export function createCryptoDropdown(options: CryptoDropdownOptions): CryptoDrop
   triggerElement.setAttribute('aria-expanded', 'false');
   triggerElement.innerHTML = `
     <span>Add a Cryptocurrency</span>
-    <span aria-hidden="true">›</span>
+    <span class="crypto-dropdown__trigger-icon" aria-hidden="true">›</span>
   `;
 
   const menuElement = document.createElement('div');
@@ -129,12 +129,14 @@ export function createCryptoDropdown(options: CryptoDropdownOptions): CryptoDrop
   function openDropdown(): void {
     menuElement.hidden = false;
     triggerElement.setAttribute('aria-expanded', 'true');
+    triggerElement.classList.add('crypto-dropdown__trigger--open');
     focusedIndex = -1;
   }
 
   function closeDropdown(): void {
     menuElement.hidden = true;
     triggerElement.setAttribute('aria-expanded', 'false');
+    triggerElement.classList.remove('crypto-dropdown__trigger--open');
     focusedIndex = -1;
   }
 
