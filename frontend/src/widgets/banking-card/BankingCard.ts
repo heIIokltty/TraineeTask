@@ -1,5 +1,8 @@
 import { createGoogleLoginButton } from '../../features/google-auth/ui/GoogleLoginButton';
-import type { AuthService } from '../../features/google-auth/model/auth.types';
+import type {
+  AuthAccountType,
+  AuthService,
+} from '../../features/google-auth/model/auth.types';
 import './BankingCard.css';
 
 interface BankingCardOptions {
@@ -7,6 +10,8 @@ interface BankingCardOptions {
 }
 
 export function createBankingCard({ authService }: BankingCardOptions): HTMLElement {
+  let selectedAccountType: AuthAccountType = 'personal';
+
   const cardElement = document.createElement('aside');
   cardElement.className = 'banking-card';
   cardElement.setAttribute('aria-labelledby', 'banking-card-title');
@@ -24,8 +29,16 @@ export function createBankingCard({ authService }: BankingCardOptions): HTMLElem
   tabsElement.setAttribute('role', 'tablist');
   tabsElement.setAttribute('aria-label', 'Account type');
 
-  const personalTab = createTabButton('Personal', true);
-  const businessTab = createTabButton('Business', false);
+  const personalTab = createTabButton('Personal', 'personal');
+  const businessTab = createTabButton('Business', 'business');
+  personalTab.addEventListener('click', () => {
+    selectedAccountType = 'personal';
+    updateTabs();
+  });
+  businessTab.addEventListener('click', () => {
+    selectedAccountType = 'business';
+    updateTabs();
+  });
   tabsElement.append(personalTab, businessTab);
   headerElement.append(titleElement, tabsElement);
 
@@ -35,7 +48,7 @@ export function createBankingCard({ authService }: BankingCardOptions): HTMLElem
   const forgotPasswordLink = document.createElement('a');
   forgotPasswordLink.className = 'banking-card__forgot-link';
   forgotPasswordLink.href = '#google-login';
-  forgotPasswordLink.textContent = 'Forgot Password?';
+  forgotPasswordLink.textContent = 'Start Your Journey Now!';
 
   const dividerElement = document.createElement('div');
   dividerElement.className = 'banking-card__divider';
@@ -46,12 +59,19 @@ export function createBankingCard({ authService }: BankingCardOptions): HTMLElem
 
   const signupLink = document.createElement('a');
   signupLink.className = 'banking-card__signup-link';
-  signupLink.href = '#google-login';
-  signupLink.textContent = 'Sign Up';
-  footerElement.append("Don't have an account?", signupLink);
+  signupLink.href = '#';
+  signupLink.textContent = 'Create account';
+  signupLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    void authService.startSignUp(selectedAccountType);
+  });
+  footerElement.append(signupLink);
 
   bodyElement.append(
-    createGoogleLoginButton({ authService }),
+    createGoogleLoginButton({
+      authService,
+      getAccountType: () => selectedAccountType,
+    }),
     forgotPasswordLink,
     dividerElement,
     footerElement,
@@ -59,17 +79,30 @@ export function createBankingCard({ authService }: BankingCardOptions): HTMLElem
 
   cardElement.append(headerElement, bodyElement);
 
+  updateTabs();
+
   return cardElement;
+
+  function updateTabs(): void {
+    const isPersonalSelected = selectedAccountType === 'personal';
+
+    personalTab.classList.toggle('banking-card__tab--active', isPersonalSelected);
+    businessTab.classList.toggle('banking-card__tab--active', !isPersonalSelected);
+    personalTab.setAttribute('aria-selected', String(isPersonalSelected));
+    businessTab.setAttribute('aria-selected', String(!isPersonalSelected));
+  }
 }
 
-function createTabButton(label: string, isSelected: boolean): HTMLButtonElement {
+function createTabButton(
+  label: string,
+  accountType: AuthAccountType,
+): HTMLButtonElement {
   const buttonElement = document.createElement('button');
-  buttonElement.className = isSelected
-    ? 'banking-card__tab banking-card__tab--active'
-    : 'banking-card__tab';
+  buttonElement.className = 'banking-card__tab';
   buttonElement.type = 'button';
-  buttonElement.role = 'tab';
-  buttonElement.setAttribute('aria-selected', String(isSelected));
+  buttonElement.setAttribute('role', 'tab');
+  buttonElement.setAttribute('aria-selected', 'false');
+  buttonElement.dataset.accountType = accountType;
   buttonElement.textContent = label;
 
   return buttonElement;

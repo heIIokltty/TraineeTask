@@ -1,3 +1,6 @@
+export type AuthAccountType = 'personal' | 'business';
+
 export interface AuthService {
-  loginWithGoogle: () => void | Promise<void>;
+  loginWithGoogle: (accountType: AuthAccountType) => void | Promise<void>;
+  startSignUp: (accountType: AuthAccountType) => void | Promise<void>;
 }
