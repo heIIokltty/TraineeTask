@@ -27,7 +27,13 @@ export function createHeader(): HTMLElement {
   logoElement.className = 'header__logo';
   logoElement.href = '/';
   logoElement.setAttribute('aria-label', 'KAIROS home');
-  logoElement.textContent = 'KAIROS';
+
+  const logoImage = document.createElement('img');
+  logoImage.className = 'header__logo-image';
+  logoImage.src = '/assets/kairos-logo.png';
+  logoImage.alt = 'KAIROS';
+
+  logoElement.append(logoImage);
 
   const navigationElement = document.createElement('nav');
   navigationElement.className = 'header__nav';
