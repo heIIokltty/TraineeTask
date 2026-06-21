@@ -13,7 +13,7 @@
   position: relative;
   z-index: var(--z-index-base);
   --circle-size: 760px;
-  --crypto-card-radius: calc(var(--circle-size) * 0.43);
+  --crypto-card-radius: calc(var(--circle-size) * 0.49);
   width: min(100% - 160px, 1760px);
   min-height: 917px;
   margin: 0 auto;
