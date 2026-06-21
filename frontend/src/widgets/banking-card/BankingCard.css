@@ -1,12 +1,12 @@
 .banking-card {
   flex: 0 0 auto;
-  width: min(100%, 426px);
+  width: min(100%, 416px);
   margin-top: 36px;
   overflow: hidden;
   border: 0;
   border-radius: 8px;
   background: var(--color-white);
-  box-shadow: 0 22px 54px rgb(0 0 0 / 28%);
+  box-shadow: 0 24px 58px rgb(0 0 0 / 30%);
   color: #1c0a2e;
 }
 
@@ -16,8 +16,8 @@
 }
 
 .banking-card__title {
-  padding: 36px var(--space-6) 28px;
-  font-size: clamp(1.65rem, 1.75vw, 2rem);
+  padding: 35px var(--space-6) 27px;
+  font-size: clamp(1.55rem, 1.65vw, 1.95rem);
   font-weight: var(--font-weight-regular);
   letter-spacing: 0.04em;
   text-align: center;
@@ -67,7 +67,7 @@
 }
 
 .banking-card__body {
-  padding: 48px 39px 31px;
+  padding: 48px 38px 32px;
 }
 
 .banking-card__journey-text,
@@ -147,7 +147,7 @@
 
 @media (width <= 1200px) {
   .banking-card {
-    width: min(100%, 426px);
+    width: min(100%, 408px);
   }
 
   .banking-card__title {
@@ -174,7 +174,7 @@
   }
 
   .banking-card__body {
-    padding: 50px 112px 63px;
+    padding: 48px clamp(40px, 14vw, 112px) 60px;
   }
 }
 
@@ -184,7 +184,7 @@
   }
 
   .banking-card__title {
-    padding-top: 20px;
+    padding: 24px var(--space-5) 22px;
     font-size: 1.25rem;
   }
 
@@ -194,6 +194,6 @@
   }
 
   .banking-card__body {
-    padding: 36px 20px 36px;
+    padding: 34px 20px 36px;
   }
 }

@@ -29,19 +29,8 @@
 
 .header__logo-image {
   display: block;
-  width: clamp(200px, 14vw, 248px);
+  width: clamp(174px, 9.2vw, 248px);
   height: auto;
-}
-
-@media (width <= 900px) {
-  .header__logo-image {
-    width: 600px;
-  }
-}
-@media (width <= 640px) {
-  .header__logo-image {
-    width: 600px;
-  }
 }
 
 .header__menu-toggle {
@@ -111,7 +100,7 @@
   }
 
   .header__logo-image {
-    width: 220px;
+    width: 176px;
   }
 
   .header__menu-toggle {
@@ -208,7 +197,7 @@
   }
 
   .header__logo-image {
-    width: 140px;
+    width: 112px;
   }
 
   .header__menu-toggle {

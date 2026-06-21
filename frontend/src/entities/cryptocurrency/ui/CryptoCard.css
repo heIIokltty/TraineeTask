@@ -75,7 +75,28 @@
 
 @media (width <= 640px) {
   .crypto-card {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) auto;
     width: 100%;
     max-width: 100%;
+    gap: var(--space-3);
+    justify-items: start;
+  }
+
+  .crypto-card__icon,
+  .crypto-card--right .crypto-card__icon {
+    order: 1;
+  }
+
+  .crypto-card__name,
+  .crypto-card--right .crypto-card__name {
+    order: 2;
+    max-width: 100%;
+  }
+
+  .crypto-card__price,
+  .crypto-card--right .crypto-card__price {
+    justify-self: end;
+    order: 3;
   }
 }

@@ -1,7 +1,7 @@
 .crypto-dropdown {
   position: relative;
   z-index: var(--z-index-dropdown);
-  width: min(346px, 72vw);
+  width: min(346px, 100%);
 }
 
 .crypto-dropdown__trigger {
@@ -12,7 +12,7 @@
   justify-content: space-between;
   width: 100%;
   min-height: 48px;
-  padding: 0 34px 0 44px;
+  padding: 0 32px 0 40px;
   border: 1px solid #5c2186;
   border-radius: var(--radius-sm);
   background: var(--color-white);
@@ -91,14 +91,17 @@
   left: 0;
   z-index: calc(var(--z-index-dropdown) + 1);
   display: grid;
-  max-height: 280px;
-  margin-top: var(--space-4);
+  max-height: min(304px, 56vh);
+  margin-top: var(--space-3);
   overflow-y: auto;
-  padding: var(--space-2);
+  padding: 10px;
   border: 1px solid rgb(92 33 134 / 64%);
   border-radius: var(--radius-sm);
-  background: rgb(255 255 255 / 96%);
-  box-shadow: var(--shadow-md);
+  background: rgb(255 255 255 / 97%);
+  box-shadow:
+    0 18px 46px rgb(0 0 0 / 26%),
+    0 0 22px rgb(92 33 134 / 14%);
+  backdrop-filter: blur(6px);
 }
 
 .crypto-dropdown__menu[hidden] {
@@ -110,7 +113,8 @@
   grid-template-columns: 28px 1fr auto;
   align-items: center;
   gap: var(--space-3);
-  min-height: 40px;
+  min-height: 42px;
+  padding: 0 var(--space-2);
   border: 0;
   border-radius: var(--radius-sm);
   background: transparent;
@@ -121,7 +125,7 @@
 
 .crypto-dropdown__option:hover:not(:disabled),
 .crypto-dropdown__option:focus-visible:not(:disabled) {
-  background: rgb(43 0 93 / 8%);
+  background: rgb(43 0 93 / 9%);
 }
 
 .crypto-dropdown__option:disabled {
@@ -154,9 +158,17 @@
   }
 
   .crypto-dropdown__trigger {
-    min-height: 44px;
+    min-height: 48px;
     padding-inline: var(--space-5);
-    font-size: var(--font-size-md);
+    font-size: 0.95rem;
+  }
+
+  .crypto-dropdown__menu {
+    max-height: 300px;
+  }
+
+  .crypto-dropdown__option {
+    min-height: 46px;
   }
 }
 
