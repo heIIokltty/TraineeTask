@@ -212,10 +212,15 @@ body.hero-modal-open {
   backdrop-filter: blur(2px);
 }
 
+.hero-modal__shell {
+  position: relative;
+  width: min(100%, 1465px);
+}
+
 .hero-modal__close {
   position: absolute;
-  top: 18px;
-  right: 18px;
+  top: -66px;
+  right: 0;
   z-index: 2;
   display: block;
   width: 48px;
@@ -272,7 +277,7 @@ body.hero-modal-open {
 
 .hero-modal__panel {
   position: relative;
-  width: min(100%, 1465px);
+  width: 100%;
   overflow: visible;
 }
 
@@ -453,8 +458,8 @@ body.hero-modal-open {
   }
 
   .hero-modal__close {
-    top: 18px;
-    right: 18px;
+    top: -72px;
+    right: 0;
     width: 54px;
     height: 54px;
   }
@@ -465,7 +470,7 @@ body.hero-modal-open {
   }
 
   .hero-modal__panel--video {
-    margin-top: 206px;
+    margin-top: 0;
   }
 
   .hero-modal__panel--learn-more {
