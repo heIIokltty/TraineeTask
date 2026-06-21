@@ -29,7 +29,7 @@ def start_google_oauth(settings: Annotated[Settings, Depends(get_settings)]) -> 
             detail=error.message,
         ) from error
 
-    return RedirectResponse(authorization_url)
+    return RedirectResponse(authorization_url, status_code=status.HTTP_303_SEE_OTHER)
 
 
 @router.get("/google/callback")
@@ -43,19 +43,15 @@ def complete_google_oauth(
     try:
         token = use_case.execute(code=code, state=state)
     except AuthenticationError as error:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=error.message,
-        ) from error
+        redirect_url = build_frontend_auth_error_url(settings.frontend_url, error.message)
+        return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
     except AppError as error:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=error.message,
-        ) from error
+        redirect_url = build_frontend_auth_error_url(settings.frontend_url, error.message)
+        return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
 
     redirect_url = build_frontend_auth_callback_url(settings.frontend_url, token)
 
-    return RedirectResponse(redirect_url)
+    return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
 
 
 @router.get("/me", response_model=UserResponse)
@@ -84,6 +80,10 @@ def get_current_user(
 
 def build_frontend_auth_callback_url(frontend_url: str, token: str) -> str:
     return f"{frontend_url.rstrip('/')}/auth/callback#token={quote(token)}"
+
+
+def build_frontend_auth_error_url(frontend_url: str, message: str) -> str:
+    return f"{frontend_url.rstrip('/')}/auth/callback?error={quote(message)}"
 
 
 def extract_bearer_token(authorization: str | None) -> str:

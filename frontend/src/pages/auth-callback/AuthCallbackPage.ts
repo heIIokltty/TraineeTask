@@ -4,6 +4,8 @@ export function createAuthCallbackPage(): HTMLElement {
   const pageElement = document.createElement('main');
   pageElement.className = 'app-placeholder';
   const token = getTokenFromLocation(window.location);
+  const error = getErrorFromLocation(window.location);
+  const errorMessage = escapeHtml(error ?? 'No authorization token was returned by the backend.');
 
   if (token) {
     saveAuthToken(token);
@@ -23,7 +25,7 @@ export function createAuthCallbackPage(): HTMLElement {
       <p class="app-placeholder__eyebrow">OAuth</p>
       <h1 class="app-placeholder__title" id="auth-callback-title">Sign in failed</h1>
       <p class="app-placeholder__text">
-        No authorization token was returned by the backend.
+        ${errorMessage}
       </p>
     </section>
   `;
@@ -36,4 +38,17 @@ function getTokenFromLocation(location: Location): string | null {
   const queryParams = new URLSearchParams(location.search);
 
   return hashParams.get('token') ?? queryParams.get('token');
+}
+
+function getErrorFromLocation(location: Location): string | null {
+  const queryParams = new URLSearchParams(location.search);
+
+  return queryParams.get('error');
+}
+
+function escapeHtml(value: string): string {
+  const element = document.createElement('span');
+  element.textContent = value;
+
+  return element.innerHTML;
 }
