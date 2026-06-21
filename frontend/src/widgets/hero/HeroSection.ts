@@ -38,8 +38,10 @@ export function createHeroSection(): HTMLElement {
   const copyElement = document.createElement('div');
   copyElement.className = 'hero-section__copy';
   copyElement.innerHTML = `
-    <h1 class="hero-section__title" id="hero-title">FROM THE FIELD OF ALL POSSIBILITY</h1>
-    <p class="hero-section__description">
+    <h1 class="hero-section__title animate-on-load delay-1" id="hero-title">
+      FROM THE FIELD OF ALL POSSIBILITY
+    </h1>
+    <p class="hero-section__description animate-on-load delay-2">
       This is an emergent space where ideas are not created, but carefully discovered.
       We navigate the vast potential to bring forth only the most resonant patterns and
       coherent forms. Here, the Future is curated from the infinite.
@@ -47,7 +49,7 @@ export function createHeroSection(): HTMLElement {
   `;
 
   const actionsElement = document.createElement('div');
-  actionsElement.className = 'hero-section__actions';
+  actionsElement.className = 'hero-section__actions animate-on-load delay-3';
 
   const learnMoreLink = document.createElement('a');
   learnMoreLink.className = 'hero-section__button hero-section__button--primary';
@@ -68,7 +70,10 @@ export function createHeroSection(): HTMLElement {
 
   actionsElement.append(learnMoreLink, playVideoButton);
   copyElement.append(actionsElement);
-  contentElement.append(copyElement, createBankingCard({ authService }));
+  const bankingCardElement = createBankingCard({ authService });
+  bankingCardElement.classList.add('animate-on-load', 'delay-4');
+
+  contentElement.append(copyElement, bankingCardElement);
   sectionElement.append(videoElement, contentElement);
 
   requestAnimationFrame(() => {

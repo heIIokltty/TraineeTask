@@ -19,7 +19,7 @@ function createNavigationItem(label: string): HTMLLIElement {
 export function createHeader(): HTMLElement {
   let isMenuOpen = false;
   const headerElement = document.createElement('header');
-  headerElement.className = 'header';
+  headerElement.className = 'header animate-on-load delay-4';
 
   const innerElement = document.createElement('div');
   innerElement.className = 'header__inner';
