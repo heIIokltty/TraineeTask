@@ -38,10 +38,64 @@ const RIGHT_ANGLE_RANGE = {
   end: 402,
 } as const;
 
+type JaggedCirclePathOptions = {
+  cx: number;
+  cy: number;
+  radius: number;
+  points: number;
+  amplitude: number;
+  seed: number;
+};
+
+const ORBIT_RING_DEFINITIONS: ReadonlyArray<{
+  className: string;
+  lineClassName: string;
+  radius: number;
+  points: number;
+  amplitude: number;
+  seed: number;
+}> = [
+  {
+    className: 'crypto-board__orbit-ring--outer',
+    lineClassName: 'crypto-board__orbit-line--outer',
+    radius: 318,
+    points: 800,
+    amplitude: 3,
+    seed: 11,
+  },
+  {
+    className: 'crypto-board__orbit-ring--middle',
+    lineClassName: 'crypto-board__orbit-line--middle',
+    radius: 278,
+    points: 800,
+    amplitude: 3,
+    seed: 22,
+  },
+  {
+    className: 'crypto-board__orbit-ring--inner',
+    lineClassName: 'crypto-board__orbit-line--inner',
+    radius: 238,
+    points: 800,
+    amplitude: 3,
+    seed: 33,
+  },
+];
+
 export function createCryptoBoard(): HTMLElement {
   const store = createCryptocurrencyStore();
   const selectedCoinsStore = createSelectedCoinsStore();
   const priceStream = createCryptoPriceStream();
+  const orbitRingDefinitions = ORBIT_RING_DEFINITIONS.map((definition) => ({
+    ...definition,
+    path: createJaggedCirclePath({
+      cx: 350,
+      cy: 350,
+      radius: definition.radius,
+      points: definition.points,
+      amplitude: definition.amplitude,
+      seed: definition.seed,
+    }),
+  }));
   const sectionElement = document.createElement('section');
   sectionElement.className = 'crypto-board';
   sectionElement.setAttribute('aria-labelledby', 'crypto-board-title');
@@ -69,20 +123,21 @@ export function createCryptoBoard(): HTMLElement {
   centerElement.innerHTML = `
     <svg class="crypto-board__orbit" viewBox="0 0 700 700" aria-hidden="true">
       <defs>
-        <filter id="crypto-board-rough-line">
-          <feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="2" seed="7" />
-          <feDisplacementMap in="SourceGraphic" scale="3.4" />
-        </filter>
-        <linearGradient id="crypto-board-ring-gradient" x1="70" y1="70" x2="630" y2="630">
+        <linearGradient id="crypto-board-ring-gradient" x1="70" y1="70" x2="630" y2="630" gradientUnits="userSpaceOnUse">
           <stop offset="0" stop-color="#78b8f2" stop-opacity="0.28" />
           <stop offset="0.42" stop-color="#7ebdff" stop-opacity="0.82" />
           <stop offset="0.72" stop-color="#3c75b2" stop-opacity="0.44" />
           <stop offset="1" stop-color="#78b8f2" stop-opacity="0.22" />
         </linearGradient>
       </defs>
-      <circle class="crypto-board__orbit-line crypto-board__orbit-line--outer" cx="350" cy="350" r="318" />
-      <circle class="crypto-board__orbit-line crypto-board__orbit-line--middle" cx="350" cy="350" r="278" />
-      <circle class="crypto-board__orbit-line crypto-board__orbit-line--inner" cx="350" cy="350" r="238" />
+      ${orbitRingDefinitions
+        .map(
+          (ring) => `
+      <g class="crypto-board__orbit-ring ${ring.className}">
+        <path class="crypto-board__orbit-line ${ring.lineClassName}" d="${ring.path}" />
+      </g>`,
+        )
+        .join('')}
     </svg>
     <div class="crypto-board__center-content">
       <h2 class="crypto-board__title" id="crypto-board-title">Online Banking</h2>
@@ -253,4 +308,37 @@ function getAngleForIndex(
   const progress = index / (itemsCount - 1);
 
   return startAngle + (endAngle - startAngle) * progress;
+}
+
+function createJaggedCirclePath(options: JaggedCirclePathOptions): string {
+  const random = createSeededRandom(options.seed);
+  const angleStep = (Math.PI * 2) / options.points;
+  const angleOffset = random() * Math.PI * 2;
+  const commands: string[] = [];
+
+  for (let index = 0; index < options.points; index += 1) {
+    const angle = angleOffset + angleStep * index;
+    const radialOffset = (random() * 2 - 1) * options.amplitude;
+    const radius = options.radius + radialOffset;
+    const x = options.cx + Math.cos(angle) * radius;
+    const y = options.cy + Math.sin(angle) * radius;
+    const command = index === 0 ? 'M' : 'L';
+
+    commands.push(`${command} ${x.toFixed(2)} ${y.toFixed(2)}`);
+  }
+
+  return `${commands.join(' ')} Z`;
+}
+
+function createSeededRandom(seed: number): () => number {
+  let state = seed >>> 0;
+
+  return () => {
+    state += 0x6D2B79F5;
+    let value = state;
+    value = Math.imul(value ^ (value >>> 15), value | 1);
+    value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+
+    return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
+  };
 }

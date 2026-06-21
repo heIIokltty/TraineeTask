@@ -105,23 +105,41 @@
   fill: none;
   stroke: url("#crypto-board-ring-gradient");
   stroke-width: 1.75;
-  filter: url("#crypto-board-rough-line");
   opacity: 0.94;
+  stroke-dasharray: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
 
-.crypto-board__orbit-line--outer {
-  stroke-dasharray: 3 6 9 4 2 5;
+.crypto-board__orbit-ring {
+  transform-box: view-box;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.crypto-board__orbit-ring--outer {
+  animation: crypto-spin-cw 28s linear infinite;
+}
+
+.crypto-board__orbit-ring--middle {
+  animation: crypto-spin-ccw 34s linear infinite;
+}
+
+.crypto-board__orbit-ring--inner {
+  animation: crypto-spin-cw 24s linear infinite;
 }
 
 .crypto-board__orbit-line--middle {
-  stroke-dasharray: 4 5 2 6 10 5;
   opacity: 0.9;
 }
 
 .crypto-board__orbit-line--inner {
-  stroke-dasharray: 2 6 8 4 3 7;
   opacity: 0.76;
+}
+
+.crypto-board__orbit-line--outer {
+  opacity: 0.96;
 }
 
 .crypto-board__center-content {
@@ -230,11 +248,30 @@
   }
 }
 
+@keyframes crypto-spin-cw {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes crypto-spin-ccw {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .crypto-board__frame,
   .crypto-board__frame-path,
   .crypto-board__frame-dot,
-  .crypto-board__orbit {
+  .crypto-board__orbit,
+  .crypto-board__orbit-ring {
     animation: none;
     clip-path: none;
     opacity: 1;
