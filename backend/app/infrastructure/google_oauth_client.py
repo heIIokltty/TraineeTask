@@ -24,7 +24,7 @@ class GoogleOAuthClient:
         query = urlencode(
             {
                 "client_id": self._settings.google_client_id,
-                "redirect_uri": self._settings.google_redirect_uri,
+                "redirect_uri": self._settings.oauth_redirect_uri,
                 "response_type": "code",
                 "scope": " ".join(GOOGLE_OAUTH_SCOPES),
                 "state": state,
@@ -62,7 +62,7 @@ class GoogleOAuthClient:
                 "client_secret": self._settings.google_client_secret,
                 "code": code,
                 "grant_type": "authorization_code",
-                "redirect_uri": self._settings.google_redirect_uri,
+                "redirect_uri": self._settings.oauth_redirect_uri,
             },
         ).encode("utf-8")
         request = Request(
@@ -103,6 +103,9 @@ class GoogleOAuthClient:
         if (
             not self._settings.google_client_id
             or not self._settings.google_client_secret
-            or not self._settings.google_redirect_uri
+            or not self._settings.oauth_redirect_uri
         ):
-            raise ConfigurationError("Google OAuth environment variables are required.")
+            raise ConfigurationError(
+                "GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and GOOGLE_REDIRECT_URI "
+                "or BACKEND_PUBLIC_URL are required.",
+            )
