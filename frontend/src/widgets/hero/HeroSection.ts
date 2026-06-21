@@ -2,8 +2,7 @@ import { createAuthService } from '../../features/google-auth/model/auth.service
 import { createBankingCard } from '../banking-card/BankingCard';
 import './HeroSection.css';
 
-const HERO_VIDEO_SOURCE = 'videos/HP.mp4';
-const HERO_VIDEO_FALLBACK_SOURCE = 'videos/HP.webm';
+const HERO_VIDEO_SOURCE = 'videos/HP.webm';
 const HERO_VIDEO_POSTER = 'images/hero-poster.png';
 
 export function createHeroSection(): HTMLElement {
@@ -30,11 +29,8 @@ export function createHeroSection(): HTMLElement {
 
   const sourceElement = document.createElement('source');
   sourceElement.src = HERO_VIDEO_SOURCE;
-  sourceElement.type = 'video/mp4';
-  const fallbackSourceElement = document.createElement('source');
-  fallbackSourceElement.src = HERO_VIDEO_FALLBACK_SOURCE;
-  fallbackSourceElement.type = 'video/webm';
-  videoElement.append(sourceElement, fallbackSourceElement);
+  sourceElement.type = 'video/webm';
+  videoElement.append(sourceElement);
 
   const overlayElement = document.createElement('div');
   overlayElement.className = 'hero-section__overlay';
@@ -175,11 +171,8 @@ function createVideoModal(): HTMLElement {
 
   const sourceElement = document.createElement('source');
   sourceElement.src = HERO_VIDEO_SOURCE;
-  sourceElement.type = 'video/mp4';
-  const fallbackSourceElement = document.createElement('source');
-  fallbackSourceElement.src = HERO_VIDEO_FALLBACK_SOURCE;
-  fallbackSourceElement.type = 'video/webm';
-  videoElement.append(sourceElement, fallbackSourceElement);
+  sourceElement.type = 'video/webm';
+  videoElement.append(sourceElement);
 
   videoPanelElement.append(videoElement);
 
