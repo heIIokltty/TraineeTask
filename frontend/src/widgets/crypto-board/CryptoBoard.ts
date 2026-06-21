@@ -282,9 +282,9 @@ function getSelectedCoinIdsForSide(
   side: CryptoBoardSide,
 ): ReadonlyArray<CryptocurrencyId> {
   return selectedCoinIds.filter((_, index) => {
-    const shouldPlaceRight = index % 2 === 0;
+    const shouldPlaceLeft = index % 2 === 0;
 
-    return side === 'right' ? shouldPlaceRight : !shouldPlaceRight;
+    return side === 'left' ? shouldPlaceLeft : !shouldPlaceLeft;
   });
 }
 
