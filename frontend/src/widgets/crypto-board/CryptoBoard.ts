@@ -30,6 +30,11 @@ const RIGHT_BASE_COIN_IDS: ReadonlyArray<CryptocurrencyId> = [
   'tether',
 ];
 
+const INITIAL_VISIBLE_COIN_IDS: ReadonlyArray<CryptocurrencyId> = [
+  ...LEFT_BASE_COIN_IDS,
+  ...RIGHT_BASE_COIN_IDS,
+];
+
 const LEFT_ANGLE_RANGE = {
   start: 222,
   end: 138,
@@ -85,7 +90,7 @@ const ORBIT_RING_DEFINITIONS: ReadonlyArray<{
 
 export function createCryptoBoard(): HTMLElement {
   const store = createCryptocurrencyStore();
-  const selectedCoinsStore = createSelectedCoinsStore();
+  const selectedCoinsStore = createSelectedCoinsStore(INITIAL_VISIBLE_COIN_IDS);
   const priceStream = createCryptoPriceStream();
   const orbitRingDefinitions = ORBIT_RING_DEFINITIONS.map((definition) => ({
     ...definition,
@@ -153,10 +158,10 @@ export function createCryptoBoard(): HTMLElement {
 
   const cryptoDropdown = createCryptoDropdown({
     cryptocurrencies: store.getCryptocurrencies(),
-    disabledCoinIds: getVisibleCoinIds(selectedCoinsStore.getState().selectedCoinIds),
+    visibleCoinIds: new Set(selectedCoinsStore.getState().visibleCoinIds),
     isLimitReached: false,
-    onSelect(coinId): void {
-      selectedCoinsStore.selectCoin(coinId);
+    onToggle(coinId): void {
+      selectedCoinsStore.toggleCoin(coinId);
     },
   });
   const dropdownSlot = centerElement.querySelector<HTMLElement>('.crypto-board__dropdown-slot');
@@ -194,17 +199,29 @@ export function createCryptoBoard(): HTMLElement {
   return sectionElement;
 
   function renderCryptoCards(): void {
-    const selectedCoinIds = selectedCoinsStore.getState().selectedCoinIds;
+    const state = selectedCoinsStore.getState();
+    const visibleCoinIds = new Set(state.visibleCoinIds);
     const cryptocurrencies = store.getCryptocurrencies();
-    const leftCoins = getVisibleSideCoins(cryptocurrencies, selectedCoinIds, 'left');
-    const rightCoins = getVisibleSideCoins(cryptocurrencies, selectedCoinIds, 'right');
-    const visibleCoinIds = getVisibleCoinIds(selectedCoinIds);
+    const leftCoins = getVisibleSideCoins(cryptocurrencies, state.visibleCoinIds, 'left');
+    const rightCoins = getVisibleSideCoins(cryptocurrencies, state.visibleCoinIds, 'right');
 
+    removeHiddenCards(visibleCoinIds);
     renderSide(leftCoins, 'left');
     renderSide(rightCoins, 'right');
     cryptoDropdown.update({
-      disabledCoinIds: visibleCoinIds,
-      isLimitReached: selectedCoinIds.length >= selectedCoinsStore.getState().maxSelectedCoins,
+      visibleCoinIds,
+      isLimitReached: state.visibleCoinIds.length >= state.maxSelectedCoins,
+    });
+  }
+
+  function removeHiddenCards(visibleCoinIds: ReadonlySet<CryptocurrencyId>): void {
+    cardElements.forEach((cardElement, coinId) => {
+      if (visibleCoinIds.has(coinId)) {
+        return;
+      }
+
+      cardElement.remove();
+      cardElements.delete(coinId);
     });
   }
 
@@ -264,38 +281,24 @@ function observeBoardRemoval(sectionElement: HTMLElement, cleanup: () => void): 
 
 function getVisibleSideCoins(
   cryptocurrencies: ReadonlyArray<CryptocurrencyViewModel>,
-  selectedCoinIds: ReadonlyArray<CryptocurrencyId>,
+  visibleCoinIds: ReadonlyArray<CryptocurrencyId>,
   side: CryptoBoardSide,
 ): ReadonlyArray<CryptocurrencyViewModel> {
-  const baseCoinIds = side === 'left' ? LEFT_BASE_COIN_IDS : RIGHT_BASE_COIN_IDS;
-  const selectedSideCoinIds = getSelectedCoinIdsForSide(selectedCoinIds, side);
-  const visibleCoinIds = new Set<CryptocurrencyId>([
-    ...baseCoinIds,
-    ...selectedSideCoinIds,
-  ]);
+  const sideCoinIds = getVisibleCoinIdsForSide(visibleCoinIds, side);
+  const sideCoinIdSet = new Set<CryptocurrencyId>(sideCoinIds);
 
-  return cryptocurrencies.filter((cryptocurrency) => visibleCoinIds.has(cryptocurrency.id));
+  return cryptocurrencies.filter((cryptocurrency) => sideCoinIdSet.has(cryptocurrency.id));
 }
 
-function getSelectedCoinIdsForSide(
-  selectedCoinIds: ReadonlyArray<CryptocurrencyId>,
+function getVisibleCoinIdsForSide(
+  visibleCoinIds: ReadonlyArray<CryptocurrencyId>,
   side: CryptoBoardSide,
 ): ReadonlyArray<CryptocurrencyId> {
-  return selectedCoinIds.filter((_, index) => {
+  return visibleCoinIds.filter((_, index) => {
     const shouldPlaceLeft = index % 2 === 0;
 
     return side === 'left' ? shouldPlaceLeft : !shouldPlaceLeft;
   });
-}
-
-function getVisibleCoinIds(
-  selectedCoinIds: ReadonlyArray<CryptocurrencyId>,
-): ReadonlySet<CryptocurrencyId> {
-  return new Set<CryptocurrencyId>([
-    ...LEFT_BASE_COIN_IDS,
-    ...RIGHT_BASE_COIN_IDS,
-    ...selectedCoinIds,
-  ]);
 }
 
 function getAngleForIndex(

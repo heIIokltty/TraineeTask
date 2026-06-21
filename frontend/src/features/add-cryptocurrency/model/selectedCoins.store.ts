@@ -1,34 +1,57 @@
 import type { CryptocurrencyId } from '../../../entities/cryptocurrency/model/cryptocurrency.types';
 import type { SelectedCoinsListener, SelectedCoinsState } from './selectedCoins.types';
 
-const MAX_SELECTED_COINS = 6;
+const MAX_SELECTED_COINS = 16;
 
 export interface SelectedCoinsStore {
   getState: () => SelectedCoinsState;
-  selectCoin: (coinId: CryptocurrencyId) => boolean;
+  showCoin: (coinId: CryptocurrencyId) => boolean;
+  hideCoin: (coinId: CryptocurrencyId) => boolean;
+  toggleCoin: (coinId: CryptocurrencyId) => boolean;
   subscribe: (listener: SelectedCoinsListener) => () => void;
 }
 
-export function createSelectedCoinsStore(): SelectedCoinsStore {
-  let selectedCoinIds: ReadonlyArray<CryptocurrencyId> = [];
+export function createSelectedCoinsStore(
+  initialVisibleCoinIds: ReadonlyArray<CryptocurrencyId>,
+): SelectedCoinsStore {
+  let visibleCoinIds: ReadonlyArray<CryptocurrencyId> = [...initialVisibleCoinIds];
   const listeners = new Set<SelectedCoinsListener>();
 
   function getState(): SelectedCoinsState {
     return {
-      selectedCoinIds,
+      visibleCoinIds,
       maxSelectedCoins: MAX_SELECTED_COINS,
     };
   }
 
-  function selectCoin(coinId: CryptocurrencyId): boolean {
-    if (selectedCoinIds.includes(coinId) || selectedCoinIds.length >= MAX_SELECTED_COINS) {
+  function showCoin(coinId: CryptocurrencyId): boolean {
+    if (visibleCoinIds.includes(coinId) || visibleCoinIds.length >= MAX_SELECTED_COINS) {
       return false;
     }
 
-    selectedCoinIds = [...selectedCoinIds, coinId];
+    visibleCoinIds = [...visibleCoinIds, coinId];
     notify();
 
     return true;
+  }
+
+  function hideCoin(coinId: CryptocurrencyId): boolean {
+    if (!visibleCoinIds.includes(coinId) || visibleCoinIds.length <= 1) {
+      return false;
+    }
+
+    visibleCoinIds = visibleCoinIds.filter((visibleCoinId) => visibleCoinId !== coinId);
+    notify();
+
+    return true;
+  }
+
+  function toggleCoin(coinId: CryptocurrencyId): boolean {
+    if (visibleCoinIds.includes(coinId)) {
+      return hideCoin(coinId);
+    }
+
+    return showCoin(coinId);
   }
 
   function subscribe(listener: SelectedCoinsListener): () => void {
@@ -47,7 +70,9 @@ export function createSelectedCoinsStore(): SelectedCoinsStore {
 
   return {
     getState,
-    selectCoin,
+    hideCoin,
+    showCoin,
     subscribe,
+    toggleCoin,
   };
 }

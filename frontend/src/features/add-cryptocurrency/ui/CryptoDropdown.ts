@@ -6,13 +6,13 @@ import './CryptoDropdown.css';
 
 interface CryptoDropdownOptions {
   cryptocurrencies: ReadonlyArray<Cryptocurrency>;
-  disabledCoinIds: ReadonlySet<CryptocurrencyId>;
+  visibleCoinIds: ReadonlySet<CryptocurrencyId>;
   isLimitReached: boolean;
-  onSelect: (coinId: CryptocurrencyId) => void;
+  onToggle: (coinId: CryptocurrencyId) => void;
 }
 
 interface CryptoDropdownUpdateOptions {
-  disabledCoinIds: ReadonlySet<CryptocurrencyId>;
+  visibleCoinIds: ReadonlySet<CryptocurrencyId>;
   isLimitReached: boolean;
 }
 
@@ -22,7 +22,7 @@ export interface CryptoDropdown {
 }
 
 export function createCryptoDropdown(options: CryptoDropdownOptions): CryptoDropdown {
-  let disabledCoinIds = options.disabledCoinIds;
+  let visibleCoinIds = options.visibleCoinIds;
   let isLimitReached = options.isLimitReached;
   let focusedIndex = -1;
 
@@ -70,7 +70,7 @@ export function createCryptoDropdown(options: CryptoDropdownOptions): CryptoDrop
         return;
       }
 
-      options.onSelect(cryptocurrency.id);
+      options.onToggle(cryptocurrency.id);
       closeDropdown();
       triggerElement.focus();
     });
@@ -120,7 +120,7 @@ export function createCryptoDropdown(options: CryptoDropdownOptions): CryptoDrop
   return {
     element: rootElement,
     update(updateOptionsValue): void {
-      disabledCoinIds = updateOptionsValue.disabledCoinIds;
+      visibleCoinIds = updateOptionsValue.visibleCoinIds;
       isLimitReached = updateOptionsValue.isLimitReached;
       updateOptions();
     },
@@ -164,8 +164,8 @@ export function createCryptoDropdown(options: CryptoDropdownOptions): CryptoDrop
   function updateOptions(): void {
     optionButtons.forEach((optionElement) => {
       const coinId = optionElement.dataset.coinId as CryptocurrencyId;
-      const isAlreadyVisible = disabledCoinIds.has(coinId);
-      const isDisabled = isAlreadyVisible || isLimitReached;
+      const isAlreadyVisible = visibleCoinIds.has(coinId);
+      const isDisabled = !isAlreadyVisible && isLimitReached;
       const statusElement = optionElement.querySelector<HTMLElement>(
         '.crypto-dropdown__option-status',
       );
@@ -175,7 +175,7 @@ export function createCryptoDropdown(options: CryptoDropdownOptions): CryptoDrop
       optionElement.classList.toggle('crypto-dropdown__option--selected', isAlreadyVisible);
 
       if (statusElement) {
-        statusElement.textContent = isAlreadyVisible ? 'Added' : isLimitReached ? 'Limit' : '';
+        statusElement.textContent = isAlreadyVisible ? 'Remove' : isLimitReached ? 'Limit' : 'Add';
       }
     });
   }

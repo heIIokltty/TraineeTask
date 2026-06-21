@@ -1,7 +1,7 @@
 import type { CryptocurrencyId } from '../../../entities/cryptocurrency/model/cryptocurrency.types';
 
 export interface SelectedCoinsState {
-  selectedCoinIds: ReadonlyArray<CryptocurrencyId>;
+  visibleCoinIds: ReadonlyArray<CryptocurrencyId>;
   maxSelectedCoins: number;
 }
 

@@ -128,6 +128,10 @@
   background: rgb(43 0 93 / 9%);
 }
 
+.crypto-dropdown__option--selected {
+  background: rgb(43 0 93 / 6%);
+}
+
 .crypto-dropdown__option:disabled {
   color: rgb(43 0 93 / 42%);
   cursor: not-allowed;
@@ -146,10 +150,14 @@
 }
 
 .crypto-dropdown__option-status {
-  min-width: 38px;
+  min-width: 58px;
   color: rgb(43 0 93 / 52%);
   font-size: var(--font-size-xs);
   text-align: right;
+}
+
+.crypto-dropdown__option--selected .crypto-dropdown__option-status {
+  color: #5f18a9;
 }
 
 @media (width <= 640px) {
